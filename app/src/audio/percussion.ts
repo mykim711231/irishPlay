@@ -4,17 +4,24 @@
 //   Tone.getTransport(), MembraneSynth, MetalSynth, Sequence 등
 //   버전에 따라 import 방식 및 메서드명이 다를 수 있음.
 
-import * as Tone from 'tone';
+// named import → Rollup이 미사용 Tone.js 모듈을 tree-shake 가능
+import {
+  MembraneSynth,
+  MetalSynth,
+  Sequence,
+  getTransport,
+  start as toneStart,
+} from 'tone';
 import { RHYTHM_PATTERNS, getRhythmSubdivision } from './rhythmPatterns';
 
-let bassSynth: Tone.MembraneSynth | null = null;
-let hihatSynth: Tone.MetalSynth | null = null;
-let sequence: Tone.Sequence<string> | null = null;
+let bassSynth: MembraneSynth | null = null;
+let hihatSynth: MetalSynth | null = null;
+let sequence: Sequence<string> | null = null;
 let _enabled = false;
 
 function ensureSynths(): void {
   if (!bassSynth) {
-    bassSynth = new Tone.MembraneSynth({
+    bassSynth = new MembraneSynth({
       pitchDecay: 0.05,
       octaves: 6,
       envelope: { attack: 0.001, decay: 0.35, sustain: 0, release: 0.1 },
@@ -24,7 +31,7 @@ function ensureSynths(): void {
 
   if (!hihatSynth) {
     // MetalSynth: frequency는 생성자 옵션이 아닌 Signal 프로퍼티
-    hihatSynth = new Tone.MetalSynth({
+    hihatSynth = new MetalSynth({
       envelope: { attack: 0.001, decay: 0.08, release: 0.01 },
       harmonicity: 5.1,
       modulationIndex: 32,
@@ -38,7 +45,7 @@ function ensureSynths(): void {
 
 /** §15 항목 4: BPM 슬라이더 변경 시 퍼커션·멜로디 둘 다 갱신 */
 export function setPercussionBpm(bpm: number): void {
-  Tone.getTransport().bpm.value = bpm;
+  getTransport().bpm.value = bpm;
 }
 
 export function setPercussionEnabled(enabled: boolean): void {
@@ -55,15 +62,15 @@ export async function startPercussion(rhythm: string, bpm: number): Promise<void
   stopPercussion();
   ensureSynths();
 
-  // Tone.start() — AudioContext 활성화 (이미 활성이면 no-op)
-  await Tone.start();
+  // toneStart() — AudioContext 활성화 (이미 활성이면 no-op)
+  await toneStart();
 
   const pattern = RHYTHM_PATTERNS[rhythm] ?? RHYTHM_PATTERNS.reel;
   const subdivision = getRhythmSubdivision(rhythm);
 
-  Tone.getTransport().bpm.value = bpm;
+  getTransport().bpm.value = bpm;
 
-  sequence = new Tone.Sequence<string>(
+  sequence = new Sequence<string>(
     (time: number, beat: string) => {
       if (beat === 'D') {
         // C1(약 32Hz)은 일반 스피커로 재생 불가 → C2(약 65Hz)로 상향
@@ -82,7 +89,7 @@ export async function startPercussion(rhythm: string, bpm: number): Promise<void
 
   sequence.loop = true;
   sequence.start(0);
-  Tone.getTransport().start();
+  getTransport().start();
 }
 
 export function stopPercussion(): void {
@@ -91,11 +98,11 @@ export function stopPercussion(): void {
     sequence.dispose();
     sequence = null;
   }
-  Tone.getTransport().stop();
+  getTransport().stop();
 }
 
 export function pausePercussion(): void {
-  Tone.getTransport().pause();
+  getTransport().pause();
 }
 
 export function resumePercussion(rhythm: string, bpm: number): void {

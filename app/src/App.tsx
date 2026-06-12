@@ -1,92 +1,21 @@
-// sf3-generated | App: 라우팅 (§13)
+// App: 라우팅 — TuneView는 lazy load (abcjs·tone을 초기 번들에서 제외)
 
-import { useState, useCallback, useMemo } from 'react';
-import { Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
-
-import tunesData from './data/tunes.json';
-import setsData from './data/sets.json';
-
-import { TopBar } from './components/TopBar';
-import { ScoreView } from './components/ScoreView';
-import { PlayerControls } from './components/PlayerControls';
-import { ControlTray } from './components/ControlTray';
-import { SetPlayer } from './components/SetPlayer';
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { TuneList } from './components/TuneList';
 
-import { usePlayback, type Tune } from './hooks/usePlayback';
-import { useViewMode } from './hooks/useViewMode';
+// 동적 import → abcjs(503 kB)·tone(247 kB)이 /tune/:id 첫 방문 시에만 로드됨
+const TuneView = lazy(() => import('./routes/TuneView'));
 
-interface SetItem {
-  id: string;
-  name: string;
-}
-
-// ── 곡 플레이어 페이지 ──
-function TuneView(): JSX.Element {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-
-  const tune = useMemo(
-    () => (tunesData as Tune[]).find(t => t.id === id) ?? null,
-    [id]
-  );
-
-  // abcjs로 렌더된 visualObj를 state로 관리
-  const [visualObj, setVisualObj] = useState<any>(null);
-  const setVisualObjStable = useCallback((obj: any) => setVisualObj(obj), []);
-
-  const { mode, toggleMode } = useViewMode();
-  const playback = usePlayback(tune, visualObj);
-
-  const setName = useMemo(() => {
-    if (!tune) return undefined;
-    return (setsData as SetItem[]).find(s => s.id === tune.setId)?.name;
-  }, [tune]);
-
-  if (!tune) {
-    return <Navigate to="/" replace />;
-  }
-
+// 악보 청크 로딩 중 표시할 최소 스켈레톤
+function TuneViewSkeleton(): JSX.Element {
   return (
     <div
-      className="flex flex-col h-full overflow-hidden"
+      className="flex flex-col h-full items-center justify-center gap-3"
       style={{ background: 'var(--bg)' }}
     >
-      {/* §9 TopBar */}
-      <TopBar
-        tune={tune}
-        setName={setName}
-        viewMode={mode}
-        onToggleMode={toggleMode}
-        onBack={() => {
-          playback.stop();
-          navigate('/');
-        }}
-      />
-
-      {/* §10 ScoreView */}
-      <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} />
-
-      {/* 세트 내 곡 이동 */}
-      <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
-
-      {/* §9 PlayerControls */}
-      <PlayerControls playback={playback} />
-
-      {/* §9 ControlTray */}
-      <ControlTray
-        open={playback.trayOpen}
-        instrumentId={playback.instrumentId}
-        onInstrumentChange={playback.setInstrumentId}
-        percussionEnabled={playback.percussionEnabled}
-        onPercussionToggle={playback.setPercussionEnabled}
-      />
-
-      {/* §11 저작권 푸터 */}
-      <footer className="copyright-footer">
-        Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
-        Ceoltóirí Éireann.
-      </footer>
+      <span style={{ fontSize: '2rem' }}>☘️</span>
+      <p className="text-sm" style={{ color: 'var(--dim)' }}>악보 불러오는 중…</p>
     </div>
   );
 }
@@ -95,11 +24,18 @@ function TuneView(): JSX.Element {
 export default function App(): JSX.Element {
   return (
     <Routes>
-      {/* §13 / → TuneList */}
+      {/* §13 / → TuneList (eager: 초기 번들에 포함) */}
       <Route path="/" element={<TuneList />} />
 
-      {/* §13 /tune/:id → 곡 플레이어 */}
-      <Route path="/tune/:id" element={<TuneView />} />
+      {/* §13 /tune/:id → 곡 플레이어 (lazy: 첫 방문 시 로드) */}
+      <Route
+        path="/tune/:id"
+        element={
+          <Suspense fallback={<TuneViewSkeleton />}>
+            <TuneView />
+          </Suspense>
+        }
+      />
 
       {/* §13 * → / 리디렉트 */}
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -31,16 +31,28 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
+    // abcjs는 CJS 모듈 → ESM 호환을 위해 dev 서버에서 사전 번들링 필요
     include: ['abcjs'],
   },
   build: {
     target: 'es2017',
+    // abcjs(~503 kB raw)는 구조상 tree-shake 불가 → 경고 한계 상향
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router-dom'],
-          abcjs: ['abcjs'],
-          tone: ['tone'],
+        manualChunks(id) {
+          // 공통 React 스택 — 캐시 수명 극대화
+          if (
+            id.includes('/node_modules/react/') ||
+            id.includes('/node_modules/react-dom/') ||
+            id.includes('/node_modules/react-router')
+          ) return 'vendor-react';
+          // abcjs — CJS 모듈 전체 필요, lazy chunk 의존
+          if (id.includes('/node_modules/abcjs/')) return 'vendor-abcjs';
+          // tone — named import으로 tree-shake 준비됨.
+          // 단, tone v15 package.json에 sideEffects 필드 미설정 → Rollup 보수적 포함
+          // (tone 저자가 sideEffects:false 추가 시 자동으로 tree-shake 적용)
+          if (id.includes('/node_modules/tone/') || id.includes('/node_modules/@tonejs/')) return 'vendor-tone';
         },
       },
     },
