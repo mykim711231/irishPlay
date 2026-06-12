@@ -23,9 +23,70 @@ export default defineConfig({
         background_color: '#f5f3ee',
         theme_color: '#1f6f6b',
         lang: 'ko',
+        // PWA 설치 프롬프트 개선
+        categories: ['music', 'education', 'entertainment'],
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          // purpose: 'any maskable' → 어댑티브 아이콘 지원 (Android)
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+        ],
+      },
+      workbox: {
+        // ── Precache: 필수 셸만 (대용량 lazy 청크 제외) ──────────
+        // 기본값: ['**/*.{js,css,html,ico,png,svg}'] 에서 아래 제외
+        globIgnores: [
+          '**/vendor-abcjs-*.js',  // ~492 kB — TuneView 악보 렌더링 시만 필요
+          '**/vendor-tone-*.js',   // ~242 kB — 악기 연주 기능 진입 시만 필요
+          '**/TuneView-*.js',      // ~17 kB  — 악보 페이지 진입 시 lazy 로드
+        ],
+        // SPA 오프라인 폴백 — 네비게이션 요청은 index.html로
+        navigateFallback: `${base}index.html`,
+        navigateFallbackDenylist: [/^\/(api|_)\//],
+
+        // ── Runtime Cache 규칙 ───────────────────────────────────
+        runtimeCaching: [
+          // 1. 대용량 vendor 청크 (abcjs · tone) — CacheFirst, 30일
+          //    해시 변경 전까지 네트워크 불필요 → 오프라인 완전 지원
+          {
+            urlPattern: /\/assets\/vendor-(abcjs|tone)-[^/]+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'vendor-heavy-v1',
+              expiration: { maxEntries: 4, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // 2. 앱 코드 / lazy 청크 (TuneView 등) — CacheFirst, 7일
+          //    방문한 페이지는 오프라인에서 재사용 가능
+          {
+            urlPattern: /\/assets\/[^/]+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'app-chunks-v1',
+              expiration: { maxEntries: 20, maxAgeSeconds: 7 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // 3. CSS — CacheFirst, 30일 (해시 기반 캐시 무효화)
+          {
+            urlPattern: /\/assets\/[^/]+\.css$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'app-styles-v1',
+              expiration: { maxEntries: 10, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // 4. 아이콘 / 이미지 — CacheFirst, 60일
+          {
+            urlPattern: /\.(png|svg|ico|webp)(\?.*)?$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'static-images-v1',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
         ],
       },
     }),
