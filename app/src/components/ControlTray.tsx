@@ -3,6 +3,7 @@
 import React from 'react';
 import { InstrumentPicker } from './InstrumentPicker';
 import { PercussionToggle } from './PercussionToggle';
+import { testPercussion } from '../audio/soundTest';
 
 interface ControlTrayProps {
   open: boolean;
@@ -19,6 +20,11 @@ export const ControlTray: React.FC<ControlTrayProps> = ({
   percussionEnabled,
   onPercussionToggle,
 }) => {
+  const handlePercussionToggle = (v: boolean) => {
+    void testPercussion(v);
+    onPercussionToggle(v);
+  };
+
   return (
     <div
       className="overflow-hidden transition-all duration-300 ease-in-out"
@@ -38,7 +44,7 @@ export const ControlTray: React.FC<ControlTrayProps> = ({
         />
         <PercussionToggle
           enabled={percussionEnabled}
-          onToggle={onPercussionToggle}
+          onToggle={handlePercussionToggle}
         />
       </div>
     </div>

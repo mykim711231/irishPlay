@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { MELODY_INSTRUMENTS } from '../data/instruments';
+import { testInstrument } from '../audio/soundTest';
 
 interface InstrumentPickerProps {
   value: string;
@@ -24,7 +25,10 @@ export const InstrumentPicker: React.FC<InstrumentPickerProps> = ({
       <select
         id="instrument-select"
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => {
+          void testInstrument(e.target.value);
+          onChange(e.target.value);
+        }}
         className="flex-1 text-sm rounded-lg px-2 py-1.5 border appearance-none"
         style={{
           background: 'var(--paper)',
