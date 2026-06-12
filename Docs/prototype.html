@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foinn Seisiún — 작동 프로토타입</title>
+<!-- abcjs: 악보 렌더 + 음표 커서 + MIDI 재생을 모두 담당 -->
+<!-- 실제 앱에서는 npm i abcjs 후 import. 프로토타입은 CDN 사용 (fallback 포함) -->
+<script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.3/dist/abcjs-basic-min.js"></script>
+<script>
+  // CDN 1차 실패 시 unpkg로 재시도
+  if (typeof ABCJS === 'undefined') {
+    document.write('<script src="https://unpkg.com/abcjs@6.4.3/dist/abcjs-basic-min.js"><\/script>');
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     §8 디자인 토큰 — BUILD_SPEC tokens.css 와 동일
+     ============================================================ */
+  :root{
+    --bg:#f5f3ee; --paper:#ffffff; --ink:#1d2127; --line:#e3ded2;
+    --staff:#3a3f47; --note:#1d2127; --teal:#1f6f6b; --teal-d:#155551;
+    --amber:#e8a33d; --hl:#ffd24a; --hl-bg:rgba(255,210,74,.30); --dim:#7a8088;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{ background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif;
+        display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+
+  /* §9.2 TopBar */
+  .bar-top{ display:flex; align-items:center; gap:14px; padding:10px 18px;
+            background:var(--paper); border-bottom:1px solid var(--line); flex-shrink:0; }
+  .iconbtn{ width:38px; height:38px; border-radius:9px; border:1px solid var(--line);
+            background:var(--paper); cursor:pointer; font-size:16px; flex-shrink:0; }
+  .tune-id{ min-width:0; }
+  .tune-id .t{ font-family:'Fraunces',serif; font-size:19px; font-weight:600;
+               white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tune-id .s{ font-size:11.5px; color:var(--dim); }
+  .tune-id .s b{ color:var(--teal); font-weight:600; }
+  .picker{ margin-left:4px; border:1px solid var(--line); border-radius:8px;
+           padding:6px 8px; font-size:12px; font-family:inherit; background:var(--paper); }
+  .modeswitch{ margin-left:auto; display:flex; background:var(--bg);
+               border:1px solid var(--line); border-radius:10px; padding:3px; flex-shrink:0; }
+  .modeswitch button{ border:none; background:transparent; padding:7px 14px; border-radius:7px;
+               font-size:12.5px; font-weight:600; color:var(--dim); cursor:pointer; }
+  .modeswitch button.on{ background:var(--paper); color:var(--teal);
+               box-shadow:0 1px 3px rgba(0,0,0,.1); }
+
+  /* §9.1 ScoreView — 화면의 주인공 */
+  .stage{ flex:1; overflow-y:auto; padding:24px clamp(12px,3vw,48px);
+          display:flex; justify-content:center; }
+  .sheet-wrap{ width:100%; max-width:1000px; }
+  /* abcjs가 그린 SVG 보표 줄 = .abcjs-l0, .abcjs-l1 ... (add_classes:true) */
+
+  /* §10.2 현재 줄 하이라이트 (전체 보기) */
+  .system-hl{ background:var(--hl-bg); border-radius:10px; box-shadow:0 0 0 8px var(--hl-bg); }
+
+  /* §10.2 집중 보기 */
+  body.focus .abcjs-staff-extra,
+  body.focus svg .abcjs-l:not(.cur-line){ opacity:.18; }
+  body.focus .abcjs-l.cur-line{ opacity:1; }
+
+  /* 연주 중 음표 — abcjs가 강조 클래스를 부여, amber로 칠함 */
+  .abcjs-note_selected, .abcjs-cursor{ fill:var(--amber) !important; }
+  svg .abcjs-note.cur path,
+  svg .abcjs-note.cur ellipse{ fill:var(--amber) !important; }
+
+  /* §9.3 PlayerControls */
+  .bar-bottom{ flex-shrink:0; background:var(--paper); border-top:1px solid var(--line);
+               padding:12px 18px calc(12px + env(safe-area-inset-bottom)); }
+  .transport{ display:flex; align-items:center; gap:14px; max-width:1000px; margin:0 auto; }
+  .play{ width:54px; height:54px; border-radius:50%; background:var(--teal); border:none;
+         cursor:pointer; display:grid; place-items:center; flex-shrink:0;
+         box-shadow:0 4px 14px rgba(31,111,107,.35); }
+  .play svg{ fill:#fff; }
+  .sbtn{ width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+         background:var(--bg); cursor:pointer; font-size:15px; flex-shrink:0; }
+  .tempo{ flex:1; min-width:80px; }
+  .tempo .row{ display:flex; justify-content:space-between; font-size:11.5px;
+               color:var(--dim); margin-bottom:5px; }
+  .tempo .row b{ color:var(--teal); font-family:'Fraunces',serif; font-size:15px; }
+  .slider{ -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:4px;
+           background:linear-gradient(90deg,var(--teal) 45%,var(--line) 45%); }
+  .slider::-webkit-slider-thumb{ -webkit-appearance:none; width:20px; height:20px;
+           border-radius:50%; background:#fff; border:3px solid var(--teal); cursor:pointer;
+           box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  .more{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .speed-quick{ display:flex; gap:5px; }
+  .speed-quick span{ font-size:11px; padding:5px 9px; border-radius:7px; background:var(--bg);
+           border:1px solid var(--line); color:var(--dim); cursor:pointer; white-space:nowrap; }
+  .speed-quick span.on{ background:var(--teal-d); color:#fff; border-color:var(--teal-d); }
+
+  /* §9.4 ControlTray */
+  .tray{ max-width:1000px; margin:0 auto; max-height:0; overflow:hidden; transition:.3s; }
+  .tray.open{ max-height:200px; margin-top:12px; }
+  .tray-inner{ display:flex; gap:18px; flex-wrap:wrap; align-items:center;
+               padding-top:12px; border-top:1px solid var(--line); }
+  .grp{ display:flex; align-items:center; gap:9px; }
+  .grp>label{ font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--dim); }
+  .tray select{ border:1px solid var(--line); border-radius:8px; padding:8px 11px;
+               font-size:13px; font-family:inherit; background:var(--paper); }
+  .pbtn{ display:flex; align-items:center; gap:6px; border:1px solid var(--line);
+         background:var(--paper); padding:7px 12px; border-radius:8px; font-size:12.5px; cursor:pointer; }
+  .pbtn.on{ background:var(--teal); color:#fff; border-color:var(--teal); }
+
+  /* hide abcjs default audio UI (we drive it ourselves) */
+  #audio-ui{ display:none; }
+  .status{ font-size:11px; color:var(--dim); text-align:center; padding:4px; }
+
+  /* §9.7 반응형 */
+  @media (max-width:640px){
+    .speed-quick{ display:none; }
+    .tune-id .t{ font-size:16px; }
+    .modeswitch button span.lbl{ display:none; }
+    .modeswitch button{ padding:7px 11px; }
+    .picker{ display:none; }
+  }
+</style>
+</head>
+<body class="full">
+  <!-- §9.2 TopBar -->
+  <div class="bar-top">
+    <button class="iconbtn" title="곡 목록">‹</button>
+    <div class="tune-id">
+      <div class="t" id="tuneTitle">The Morning Dew</div>
+      <div class="s" id="tuneMeta"><b>Reel</b> · D Major · Book 1 p.12 · Set 3</div>
+    </div>
+    <select class="picker" id="tuneSelect"></select>
+    <div class="modeswitch">
+      <button class="on" id="mFull">📄 <span class="lbl">전체 보기</span></button>
+      <button id="mFocus">🔍 <span class="lbl">집중 보기</span></button>
+    </div>
+  </div>
+
+  <!-- §9.1 / §10 ScoreView -->
+  <div class="stage">
+    <div class="sheet-wrap">
+      <div id="score"></div>
+      <div id="audio-ui"></div>
+    </div>
+  </div>
+
+  <!-- §9.3 PlayerControls + §9.4 Tray -->
+  <div class="bar-bottom">
+    <div class="transport">
+      <button class="play" id="playBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="sbtn" id="stopBtn">■</button>
+      <button class="sbtn" id="loopBtn">↩</button>
+      <div class="tempo">
+        <div class="row"><span>속도</span><b id="bpmLabel">110 BPM</b></div>
+        <input type="range" class="slider" id="bpm" min="40" max="200" value="110">
+      </div>
+      <div class="more">
+        <div class="speed-quick" id="speedQuick">
+          <span data-mul="0.5">50%</span>
+          <span class="on" data-mul="1">기본</span>
+          <span data-mul="1.15">세션</span>
+        </div>
+        <button class="iconbtn" id="trayBtn">🎻</button>
+      </div>
+    </div>
+    <div class="tray" id="tray">
+      <div class="tray-inner">
+        <div class="grp">
+          <label>멜로디</label>
+          <select id="instSelect"></select>
+        </div>
+        <div class="grp">
+          <label>반주</label>
+          <button class="pbtn" id="bodhran">🥁 Bodhrán</button>
+          <button class="pbtn" id="spoons">🥄 Spoons</button>
+        </div>
+      </div>
+    </div>
+    <div class="status" id="status">▶ 재생을 누르면 소리가 시작됩니다 (브라우저 정책상 클릭 필요)</div>
+  </div>
+
+<script>
+/* ============================================================
+   데이터 — §4.3 시드 (BUILD_SPEC과 동일 구조)
+   ============================================================ */
+const TUNES = [
+  { id:'morning-dew', title:'The Morning Dew', book:1, page:12, rhythm:'reel',
+    key:'D Major', meter:'4/4', defaultBpm:110, set:'Set 3',
+    abc:`X:1\nT:The Morning Dew\nM:4/4\nL:1/8\nR:reel\nK:Dmaj\n|:D2FA BAFA|DEFA BABd|D2FA BAFA|defe dBAF:|\n|:a2fa b2af|defe dBAF|~A3F EFGE|FDEF GBAF:|` },
+  { id:'out-on-the-ocean', title:'Out on the Ocean', book:1, page:20, rhythm:'jig',
+    key:'G Major', meter:'6/8', defaultBpm:120, set:'Set 7',
+    abc:`X:1\nT:Out on the Ocean\nM:6/8\nL:1/8\nR:jig\nK:Gmaj\n|:G3 GAB|AGE EDB,|G3 GAB|AGA BGE:|\n|:GAB d2d|edB dBG|GAB d2e|dBA BGE:|` },
+  { id:'britches', title:'Britches Full of Stitches', book:1, page:33, rhythm:'polka',
+    key:'D Major', meter:'2/4', defaultBpm:130, set:'Set 11',
+    abc:`X:1\nT:Britches Full of Stitches\nM:2/4\nL:1/8\nR:polka\nK:Dmaj\n|:A>B AF|E2 D2|F>G FE|D2 D2:|\n|:f>e dB|A2 F2|E>F ED|B,2 A,2:|` },
+];
+
+/* §6.1 멜로디 악기 매핑 (BUILD_SPEC instruments.js) */
+const INSTRUMENTS = [
+  { id:'fiddle', label:'🎻 Fiddle', program:40, octave:0 },
+  { id:'tinwhistle', label:'🪈 Tin Whistle', program:72, octave:0 },
+  { id:'lowwhistle', label:'🎵 Low Whistle', program:73, octave:-1 },
+  { id:'flute', label:'🎺 Flute', program:73, octave:0 },
+  { id:'accordion', label:'🪗 Accordion', program:21, octave:0 },
+];
+
+/* §6.2 로휘슬 옥타브 시프트 (재생용만) */
+function shiftAbcOctave(abc, shift){
+  if(!shift) return abc;
+  return abc.split('\n').map(line=>{
+    if(/^[A-Za-z]:/.test(line)) return line; // 헤더 보존
+    return line.replace(/([A-Ga-g])([,']*)/g,(m,note,marks)=>{
+      let oct=(note===note.toLowerCase()?1:0)+(marks.match(/'/g)?.length||0)-(marks.match(/,/g)?.length||0);
+      oct+=shift; let base,suffix='';
+      if(oct>=1){ base=note.toLowerCase(); for(let i=1;i<oct;i++) suffix+="'"; }
+      else { base=note.toUpperCase(); for(let i=0;i<-oct;i++) suffix+=','; }
+      return base+suffix;
+    });
+  }).join('\n');
+}
+
+/* ============================================================
+   상태
+   ============================================================ */
+let state = { tune:TUNES[0], inst:INSTRUMENTS[0], bpm:110, mode:'full',
+              bodhran:false, spoons:false, loop:false };
+let synthControl = null;
+let visualObj = null;
+
+/* ============================================================
+   §10.3 CursorControl — 음표 하이라이트 + 줄 추적 + 자동스크롤
+   ============================================================ */
+const cursorControl = {
+  beatSubdivisions: 2,
+  onStart(){ setStatus('재생 중…'); },
+  onEvent(ev){
+    if(!ev || ev.measureStart && ev.left === null) return;
+    // 이전 하이라이트 제거
+    document.querySelectorAll('.abcjs-note.cur').forEach(n=>n.classList.remove('cur'));
+    (ev.elements||[]).flat().forEach(el=>el.classList && el.classList.add('cur'));
+    // 줄 추적 → 집중모드 자동 스크롤 (§10.3)
+    markCurrentLine(ev.line ?? 0);
+  },
+  onFinished(){
+    document.querySelectorAll('.abcjs-note.cur').forEach(n=>n.classList.remove('cur'));
+    setStatus('재생 완료');
+    if(state.loop){ play(); }
+  }
+};
+
+function markCurrentLine(lineIdx){
+  // abcjs SVG의 줄별 그룹에 cur-line 부여 (집중모드 표시/스크롤용)
+  const lines = document.querySelectorAll('#score svg .abcjs-l');
+  // fallback: 줄 클래스가 없으면 staff group 사용
+  if(lines.length){
+    lines.forEach((el,i)=> el.classList.toggle('cur-line', i===lineIdx));
+    if(state.mode==='focus'){
+      lines[lineIdx]?.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }
+}
+
+/* ============================================================
+   §7.1 악보 렌더 + 재생 준비
+   ============================================================ */
+function renderScore(){
+  // 화면에는 원본 ABC (§15-3: 시프트한 ABC를 그리지 않는다)
+  if(typeof ABCJS === 'undefined'){
+    document.getElementById('score').innerHTML =
+      '<div style="padding:40px;text-align:center;color:var(--dim);font-size:14px;line-height:1.7">'+
+      '⚠️ abcjs 라이브러리를 불러오지 못했습니다 (네트워크 확인).<br>'+
+      '실제 환경에서는 <code>npm i abcjs</code> 후 정상 동작합니다.<br><br>'+
+      '<b>'+state.tune.title+'</b> · '+state.tune.key+' · '+state.tune.meter+'</div>';
+    return;
+  }
+  visualObj = ABCJS.renderAbc('score', state.tune.abc, {
+    add_classes:true, responsive:'resize',
+    staffwidth: Math.min(960, document.querySelector('.sheet-wrap').clientWidth-20)
+  })[0];
+}
+
+async function setupSynth(){
+  if(typeof ABCJS === 'undefined'){ setStatus('abcjs 미로드 — 실제 환경에서 동작'); return; }
+  if(!ABCJS.synth.supportsAudio()){ setStatus('이 브라우저는 오디오 미지원'); return; }
+  synthControl = new ABCJS.synth.SynthController();
+  synthControl.load('#audio-ui', cursorControl, { displayProgress:false, displayWarp:false });
+}
+
+async function play(){
+  if(!synthControl){ setStatus('재생 불가 — abcjs 미로드 (실제 환경에서 동작)'); return; }
+  // §7.4 / §15-1: 사용자 클릭 안에서 AudioContext 시작
+  await ABCJS.synth.activeAudioContext()?.resume?.();
+  // 재생용 ABC = 악기 옥타브 시프트 적용
+  const playAbc = shiftAbcOctave(state.tune.abc, state.inst.octave);
+  const playObj = ABCJS.renderAbc('audio-ui', playAbc, {})[0];
+  await synthControl.setTune(playObj, true, {
+    program: state.inst.program,
+    qpm: state.bpm,
+    chordsOff: true
+  });
+  synthControl.play();
+  setStatus(`▶ ${state.inst.label} · ${state.bpm} BPM` + (state.bodhran?' · 🥁':'') + (state.spoons?' · 🥄':''));
+  // (프로토타입에선 퍼커션은 상태만 표시. 실제 앱은 §7.2 Tone.js 엔진 연결)
+}
+
+function stop(){ synthControl?.pause(); synthControl?.restart?.(); setStatus('정지'); 
+  document.querySelectorAll('.abcjs-note.cur').forEach(n=>n.classList.remove('cur')); }
+
+function setStatus(t){ document.getElementById('status').textContent = t; }
+
+/* ============================================================
+   UI 배선
+   ============================================================ */
+function fillSelects(){
+  const ts=document.getElementById('tuneSelect');
+  TUNES.forEach(t=>{ const o=document.createElement('option'); o.value=t.id; o.textContent=t.title; ts.appendChild(o); });
+  const is=document.getElementById('instSelect');
+  INSTRUMENTS.forEach(i=>{ const o=document.createElement('option'); o.value=i.id; o.textContent=i.label; is.appendChild(o); });
+}
+function loadTune(id){
+  state.tune = TUNES.find(t=>t.id===id) || TUNES[0];
+  state.bpm = state.tune.defaultBpm;
+  document.getElementById('tuneTitle').textContent = state.tune.title;
+  document.getElementById('tuneMeta').innerHTML =
+    `<b>${cap(state.tune.rhythm)}</b> · ${state.tune.key} · Book ${state.tune.book} p.${state.tune.page} · ${state.tune.set}`;
+  document.getElementById('bpm').value = state.bpm;
+  document.getElementById('bpmLabel').textContent = state.bpm+' BPM';
+  renderScore();
+}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  fillSelects();
+  loadTune(TUNES[0].id);
+  await setupSynth();
+
+  document.getElementById('tuneSelect').onchange = e=> loadTune(e.target.value);
+  document.getElementById('instSelect').onchange = e=>{
+    state.inst = INSTRUMENTS.find(i=>i.id===e.target.value) || INSTRUMENTS[0];
+  };
+  document.getElementById('playBtn').onclick = ()=> play();
+  document.getElementById('stopBtn').onclick = ()=> stop();
+  document.getElementById('loopBtn').onclick = (e)=>{
+    state.loop=!state.loop; e.currentTarget.style.background = state.loop?'var(--teal)':'var(--bg)';
+    e.currentTarget.style.color = state.loop?'#fff':'var(--ink)';
+  };
+  // BPM
+  const bpm=document.getElementById('bpm');
+  bpm.oninput = e=>{
+    state.bpm=+e.target.value;
+    document.getElementById('bpmLabel').textContent = state.bpm+' BPM';
+    document.querySelectorAll('#speedQuick span').forEach(s=>s.classList.remove('on'));
+  };
+  // 빠른 속도
+  document.querySelectorAll('#speedQuick span').forEach(s=>{
+    s.onclick=()=>{
+      document.querySelectorAll('#speedQuick span').forEach(x=>x.classList.remove('on'));
+      s.classList.add('on');
+      state.bpm = Math.round(state.tune.defaultBpm * parseFloat(s.dataset.mul));
+      bpm.value=state.bpm; document.getElementById('bpmLabel').textContent=state.bpm+' BPM';
+    };
+  });
+  // 모드 토글
+  document.getElementById('mFull').onclick = ()=> setMode('full');
+  document.getElementById('mFocus').onclick = ()=> setMode('focus');
+  // 트레이
+  document.getElementById('trayBtn').onclick = ()=> document.getElementById('tray').classList.toggle('open');
+  // 퍼커션 토글 (프로토타입: 상태 표시)
+  document.getElementById('bodhran').onclick = e=>{ state.bodhran=!state.bodhran; e.currentTarget.classList.toggle('on'); };
+  document.getElementById('spoons').onclick = e=>{ state.spoons=!state.spoons; e.currentTarget.classList.toggle('on'); };
+
+  window.addEventListener('resize', ()=> renderScore());
+});
+
+function setMode(m){
+  state.mode=m;
+  document.body.className=m;
+  document.getElementById('mFull').classList.toggle('on', m==='full');
+  document.getElementById('mFocus').classList.toggle('on', m==='focus');
+}
+</script>
+</body>
+</html>

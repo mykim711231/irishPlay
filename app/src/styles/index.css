@@ -1,0 +1,75 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── abcjs 악보 렌더 ── */
+.abc-paper {
+  background: var(--paper);
+  border-radius: 12px;
+}
+
+.abc-paper svg {
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* 현재 재생 음표 하이라이트 */
+.abcjs-note.cur path,
+svg .abcjs-note.cur path {
+  fill: var(--amber) !important;
+}
+.abcjs-note.cur ellipse,
+svg .abcjs-note.cur ellipse {
+  fill: var(--amber) !important;
+}
+.abcjs-note_selected,
+.abcjs-cursor {
+  fill: var(--amber) !important;
+}
+
+/* 현재 줄 시스템 하이라이트 */
+.system-hl {
+  background: var(--hl-bg);
+  border-radius: 10px;
+  box-shadow: 0 0 0 8px var(--hl-bg);
+}
+
+/* ── 집중(focus) 모드 ── */
+body.focus .abcjs-staff-extra {
+  opacity: 0.18;
+}
+body.focus svg .abcjs-l:not(.cur-line) {
+  opacity: 0.18;
+}
+body.focus .abcjs-l.cur-line {
+  opacity: 1;
+}
+
+/* ── 저작권 푸터 ── */
+.copyright-footer {
+  font-size: 0.65rem;
+  color: var(--dim);
+  text-align: center;
+  padding: 4px 8px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}

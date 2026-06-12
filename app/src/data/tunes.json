@@ -1,0 +1,47 @@
+[
+  {
+    "id": "morning-dew",
+    "title": "The Morning Dew",
+    "book": 1,
+    "page": 12,
+    "rhythm": "reel",
+    "meter": "4/4",
+    "key": "Dmaj",
+    "defaultBpm": 110,
+    "setId": "set-03",
+    "setOrder": 1,
+    "abc": "X:1\nT:The Morning Dew\nM:4/4\nL:1/8\nR:reel\nK:Dmaj\n|:D2FA BAFA|DEFA BABd|D2FA BAFA|defe dBAF:|\n|:a2fa b2af|defe dBAF|~A3F EFGE|FDEF GBAF:|",
+    "source": "seed",
+    "sourceUrl": ""
+  },
+  {
+    "id": "out-on-the-ocean",
+    "title": "Out on the Ocean",
+    "book": 1,
+    "page": 20,
+    "rhythm": "jig",
+    "meter": "6/8",
+    "key": "Gmaj",
+    "defaultBpm": 120,
+    "setId": "set-07",
+    "setOrder": 1,
+    "abc": "X:1\nT:Out on the Ocean\nM:6/8\nL:1/8\nR:jig\nK:Gmaj\n|:G3 GAB|AGE EDB,|G3 GAB|AGA BGE:|\n|:GAB d2d|edB dBG|GAB d2e|dBA BGE:|",
+    "source": "seed",
+    "sourceUrl": ""
+  },
+  {
+    "id": "britches-full",
+    "title": "Britches Full of Stitches",
+    "book": 1,
+    "page": 33,
+    "rhythm": "polka",
+    "meter": "2/4",
+    "key": "Dmaj",
+    "defaultBpm": 130,
+    "setId": "set-11",
+    "setOrder": 1,
+    "abc": "X:1\nT:Britches Full of Stitches\nM:2/4\nL:1/8\nR:polka\nK:Dmaj\n|:A>B AF|E2 D2|F>G FE|D2 D2:|\n|:f>e dB|A2 F2|E>F ED|B,2 A,2:|",
+    "source": "seed",
+    "sourceUrl": ""
+  }
+]

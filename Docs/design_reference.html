@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foinn Seisiún — 디자인 기준서 (Design Reference)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f3ee; --paper:#ffffff; --ink:#1d2127; --line:#e3ded2;
+    --staff:#3a3f47; --note:#1d2127; --teal:#1f6f6b; --teal-d:#155551;
+    --amber:#e8a33d; --hl:#ffd24a; --hl-bg:rgba(255,210,74,.30); --dim:#7a8088;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; line-height:1.6; }
+  .doc{ max-width:980px; margin:0 auto; padding:40px 24px 80px; }
+  header.hd{ border-bottom:3px solid var(--teal); padding-bottom:18px; margin-bottom:8px; }
+  header.hd h1{ font-family:'Fraunces',serif; font-size:32px; font-weight:600; }
+  header.hd p{ color:var(--dim); font-size:14px; margin-top:4px; }
+  .lead{ background:var(--paper); border-left:4px solid var(--teal); border-radius:0 10px 10px 0;
+         padding:16px 20px; margin:20px 0; font-size:14px; }
+  h2{ font-family:'Fraunces',serif; font-size:23px; font-weight:600; color:var(--teal);
+      margin:38px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+  h3{ font-size:16px; font-weight:700; color:var(--ink); margin:22px 0 8px; }
+  p{ font-size:14px; margin:8px 0; }
+  code{ font-family:'JetBrains Mono',monospace; font-size:12.5px; background:#efe9dd;
+        padding:1px 6px; border-radius:5px; color:#7a4a1e; }
+  .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin:14px 0; }
+  .sw{ border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--paper); }
+  .sw .chip{ height:54px; }
+  .sw .meta{ padding:8px 10px; }
+  .sw .meta .tok{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; }
+  .sw .meta .hex{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--dim); }
+  .sw .meta .use{ font-size:10.5px; color:var(--dim); margin-top:2px; }
+  table{ width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; }
+  th,td{ border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top; }
+  th{ background:var(--teal); color:#fff; font-weight:600; }
+  tr:nth-child(even) td{ background:var(--paper); }
+  .wire{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px; margin:14px 0; }
+  .wire pre{ font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.7; white-space:pre; overflow-x:auto; color:var(--ink); }
+  .tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+        background:var(--teal-d); color:#fff; padding:2px 8px; border-radius:5px; }
+  .anno{ background:#fbf3e6; border:1px solid #f0dcb8; border-radius:8px; padding:10px 14px;
+         font-size:12.5px; margin:10px 0; }
+  .anno b{ color:#9a5e10; }
+  .typ-row{ display:flex; align-items:baseline; gap:14px; padding:8px 0; border-bottom:1px solid var(--line); }
+  .typ-row .lbl{ width:130px; font-size:12px; color:var(--dim); flex-shrink:0; }
+  ul{ margin:8px 0 8px 22px; font-size:14px; }
+  li{ margin:4px 0; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <header class="hd">
+    <h1>Foinn Seisiún — 디자인 기준서</h1>
+    <p>Design Reference for Claude Code · v4 · 연습모드 (승인본) · BUILD_SPEC §8–§10 대응</p>
+  </header>
+
+  <div class="lead">
+    이 문서는 <b>BUILD_SPEC_Foinn_Seisiun.md</b>의 UI 부분(§8 토큰, §9 레이아웃, §10 집중모드)을
+    시각적으로 정리한 기준서입니다. 함께 제공된 <b>prototype.html</b>은 실제 abcjs로 작동하는 구현 예시입니다.
+    Claude Code는 이 두 파일과 BUILD_SPEC을 함께 참조하세요. 모든 클래스명·토큰명은 prototype.html과 일치합니다.
+  </div>
+
+  <!-- ============ 색상 ============ -->
+  <h2>1. 색상 토큰 <span class="tag">tokens.css</span></h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#f5f3ee"></div><div class="meta"><div class="tok">--bg</div><div class="hex">#f5f3ee</div><div class="use">앱 배경</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid #eee"></div><div class="meta"><div class="tok">--paper</div><div class="hex">#ffffff</div><div class="use">악보지·바·카드</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1d2127"></div><div class="meta"><div class="tok">--ink / --note</div><div class="hex">#1d2127</div><div class="use">본문·음표</div></div></div>
+    <div class="sw"><div class="chip" style="background:#3a3f47"></div><div class="meta"><div class="tok">--staff</div><div class="hex">#3a3f47</div><div class="use">5선보·마디선</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1f6f6b"></div><div class="meta"><div class="tok">--teal</div><div class="hex">#1f6f6b</div><div class="use">재생 버튼·강조</div></div></div>
+    <div class="sw"><div class="chip" style="background:#155551"></div><div class="meta"><div class="tok">--teal-d</div><div class="hex">#155551</div><div class="use">선택 칩·버튼</div></div></div>
+    <div class="sw"><div class="chip" style="background:#e8a33d"></div><div class="meta"><div class="tok">--amber</div><div class="hex">#e8a33d</div><div class="use">연주 중 음표</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ffd24a"></div><div class="meta"><div class="tok">--hl</div><div class="hex">#ffd24a</div><div class="use">현재 줄 띠</div></div></div>
+    <div class="sw"><div class="chip" style="background:#7a8088"></div><div class="meta"><div class="tok">--dim</div><div class="hex">#7a8088</div><div class="use">보조 텍스트</div></div></div>
+    <div class="sw"><div class="chip" style="background:#e3ded2"></div><div class="meta"><div class="tok">--line</div><div class="hex">#e3ded2</div><div class="use">구분선·테두리</div></div></div>
+  </div>
+  <div class="anno"><b>규칙:</b> 재생 버튼 = teal / 선택 토글 ON = teal·teal-d / 현재 줄 배경 = hl-bg / 연주 중 음표만 amber. 그 외 음표·보표는 ink·staff 고정.</div>
+
+  <!-- ============ 타이포 ============ -->
+  <h2>2. 타이포그래피</h2>
+  <div class="typ-row"><div class="lbl">곡 제목 (PC)</div><div style="font-family:'Fraunces',serif;font-size:19px;font-weight:600">The Morning Dew</div></div>
+  <div class="typ-row"><div class="lbl">곡 제목 (폰)</div><div style="font-family:'Fraunces',serif;font-size:16px;font-weight:600">The Morning Dew</div></div>
+  <div class="typ-row"><div class="lbl">메타데이터</div><div style="font-size:11.5px;color:var(--dim)"><b style="color:var(--teal)">Reel</b> · D Major · Book 1 p.12</div></div>
+  <div class="typ-row"><div class="lbl">BPM 숫자</div><div style="font-family:'Fraunces',serif;font-size:15px;color:var(--teal);font-weight:600">110 BPM</div></div>
+  <div class="typ-row"><div class="lbl">버튼/칩</div><div style="font-size:12.5px;font-weight:600">전체 보기</div></div>
+  <p style="margin-top:12px"><b>디스플레이</b> = Fraunces (제목·BPM) · <b>본문/UI</b> = Inter (그 외 전부)</p>
+
+  <!-- ============ 레이아웃 ============ -->
+  <h2>3. 레이아웃 구조 <span class="tag">App.jsx</span></h2>
+  <p>세로 스택. 가운데 ScoreView가 <code>flex:1</code>로 남은 공간을 모두 차지 — 악보가 주인공.</p>
+  <div class="wire"><pre>┌─────────────────────────────────────────────┐
+│ .bar-top   ‹  곡제목+메타   [곡선택] [📄|🔍]   │  ← TopBar.jsx  (flex-shrink:0)
+├─────────────────────────────────────────────┤
+│                                               │
+│            #score  (abcjs SVG)                │  ← ScoreView.jsx  (flex:1, overflow-y:auto)
+│         ▶ 악보 = 화면의 70~80%                 │     .stage > .sheet-wrap > #score
+│                                               │
+├─────────────────────────────────────────────┤
+│ ▶  ■  ↩   속도 ──●── 110BPM  [50|기본|세션] 🎻 │  ← PlayerControls.jsx (flex-shrink:0)
+│ ┌─ .tray (펼침) ──────────────────────────┐  │
+│ │ 멜로디 [▼Fiddle]   반주 [🥁][🥄]         │  │  ← ControlTray.jsx
+│ └──────────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘</pre></div>
+
+  <!-- ============ 컴포넌트 매핑 ============ -->
+  <h2>4. 컴포넌트 ↔ 클래스 ↔ DOM id 매핑</h2>
+  <table>
+    <tr><th>컴포넌트</th><th>주요 클래스 / id</th><th>BUILD_SPEC</th></tr>
+    <tr><td>TopBar.jsx</td><td><code>.bar-top</code> <code>.tune-id</code> <code>.modeswitch</code> <code>#tuneSelect</code></td><td>§9.2</td></tr>
+    <tr><td>ScoreView.jsx</td><td><code>.stage</code> <code>.sheet-wrap</code> <code>#score</code></td><td>§10.1</td></tr>
+    <tr><td>PlayerControls.jsx</td><td><code>.transport</code> <code>.play</code> <code>#bpm</code> <code>#speedQuick</code></td><td>§9.3</td></tr>
+    <tr><td>ControlTray.jsx</td><td><code>.tray</code> <code>#trayBtn</code></td><td>§9.4</td></tr>
+    <tr><td>InstrumentPicker.jsx</td><td><code>#instSelect</code></td><td>§9.5 / §6.1</td></tr>
+    <tr><td>PercussionToggle.jsx</td><td><code>#bodhran</code> <code>#spoons</code> <code>.pbtn.on</code></td><td>§9.6 / §7.2</td></tr>
+    <tr><td>usePlayback.js</td><td>cursorControl <code>.abcjs-note.cur</code> <code>.cur-line</code></td><td>§10.3</td></tr>
+    <tr><td>useViewMode.js</td><td><code>body.full</code> / <code>body.focus</code></td><td>§9.2</td></tr>
+  </table>
+
+  <!-- ============ 집중모드 ============ -->
+  <h2>5. 두 보기 모드 (핵심) <span class="tag">§10.2</span></h2>
+  <table>
+    <tr><th>모드</th><th>body 클래스</th><th>동작</th><th>스크롤</th></tr>
+    <tr><td>📄 전체 보기</td><td><code>full</code></td><td>전곡 악보 표시, 현재 줄만 노란 띠(<code>.hl-bg</code>)</td><td>수동</td></tr>
+    <tr><td>🔍 집중 보기</td><td><code>focus</code></td><td>현재 줄 확대(PC 1.55배/폰 1.15배), 다음 줄 흐리게</td><td>자동(scrollIntoView)</td></tr>
+  </table>
+  <div class="anno"><b>구현 핵심:</b> abcjs <code>CursorControl.onEvent</code>에서 ① 현재 음표에 <code>.cur</code> 부여(amber) ② 현재 줄에 <code>.cur-line</code> 부여 ③ 집중모드면 <code>scrollIntoView({behavior:'smooth',block:'center'})</code>. 화면엔 <b>원본 ABC</b>만 렌더(시프트한 ABC 금지 — §15-3).</div>
+
+  <!-- ============ 악기 ============ -->
+  <h2>6. 악기 매핑 <span class="tag">§6.1</span></h2>
+  <table>
+    <tr><th>악기</th><th>id</th><th>GM program</th><th>octave</th><th>처리</th></tr>
+    <tr><td>🎻 Fiddle</td><td>fiddle</td><td>40</td><td>0</td><td>멜로디 기본</td></tr>
+    <tr><td>🪈 Tin Whistle</td><td>tinwhistle</td><td>72</td><td>0</td><td>멜로디</td></tr>
+    <tr><td>🎵 Low Whistle</td><td>lowwhistle</td><td>73</td><td><b>-1</b></td><td>flute 1옥타브↓ (재생만)</td></tr>
+    <tr><td>🎺 Flute</td><td>flute</td><td>73</td><td>0</td><td>멜로디</td></tr>
+    <tr><td>🪗 Accordion</td><td>accordion</td><td>21</td><td>0</td><td>멜로디</td></tr>
+    <tr><td>🥁 Bodhrán</td><td>—</td><td>Tone.MembraneSynth</td><td>—</td><td>퍼커션, rhythm 패턴 반주</td></tr>
+    <tr><td>🥄 Spoons</td><td>—</td><td>Tone.MetalSynth</td><td>—</td><td>퍼커션, rhythm 패턴 반주</td></tr>
+  </table>
+
+  <!-- ============ 반응형 ============ -->
+  <h2>7. 반응형 <span class="tag">§9.7</span></h2>
+  <ul>
+    <li><b>PC/태블릿 (기본):</b> 모드토글 텍스트 표시, 빠른속도 칩 노출, 집중확대 1.55배</li>
+    <li><b>폰 (≤640px):</b> 토글 아이콘만, 빠른속도 숨김(<code>.speed-quick{display:none}</code>), 집중확대 1.15배, 제목 16px, 곡선택 드롭다운 숨김</li>
+    <li><code>.sheet-wrap</code> = <code>width:100%; max-width:1000px; margin:0 auto</code> — 악보는 어느 화면이든 중앙·최우선</li>
+  </ul>
+
+  <!-- ============ 체크 ============ -->
+  <h2>8. 구현 완료 체크 (§10.4)</h2>
+  <ul>
+    <li>악보(abcjs SVG)가 화면 대부분을 차지</li>
+    <li>재생 시 현재 음표 amber 하이라이트</li>
+    <li>전체/집중 토글 동작</li>
+    <li>집중모드에서 현재 줄 확대 + 다음 줄 흐림</li>
+    <li>집중모드 재생 중 줄 바뀌면 자동 스크롤</li>
+    <li>로 휘슬 1옥타브↓ 재생 (악보 표기는 불변)</li>
+    <li>바우런/스푼 ON 시 리듬 반주가 멜로디와 박자 동기</li>
+  </ul>
+</div>
+</body>
+</html>

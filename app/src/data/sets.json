@@ -1,0 +1,23 @@
+[
+  {
+    "id": "set-03",
+    "book": 1,
+    "name": "Morning Dew Set",
+    "rhythm": "reel",
+    "tuneIds": ["morning-dew"]
+  },
+  {
+    "id": "set-07",
+    "book": 1,
+    "name": "Out on the Ocean Set",
+    "rhythm": "jig",
+    "tuneIds": ["out-on-the-ocean"]
+  },
+  {
+    "id": "set-11",
+    "book": 1,
+    "name": "Britches Set",
+    "rhythm": "polka",
+    "tuneIds": ["britches-full"]
+  }
+]

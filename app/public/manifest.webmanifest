@@ -1,0 +1,23 @@
+{
+  "name": "Foinn Seisiún",
+  "short_name": "Foinn",
+  "description": "아일랜드 세션 튠 연습 앱",
+  "start_url": "/irishPlay/",
+  "scope": "/irishPlay/",
+  "display": "standalone",
+  "background_color": "#f5f3ee",
+  "theme_color": "#1f6f6b",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
