@@ -80,15 +80,20 @@ class MelodyPlayer {
     await this.synth.prime();
 
     // TimingCallbacks: 화면 visualObj 기준으로 커서 이벤트 발생
+    // ⚠️ abcjs 실제 옵션명은 eventCallback (onEvent 아님!). 끝 도달 시 eventCallback(null) 호출됨.
     this.timingCallbacks = new (abcjs as any).TimingCallbacks(
       screenVisualObj,
       {
         qpm: bpm,
         beatSubdivisions: 2,
-        onEvent,
-        onFinished: () => {
-          this.state = 'idle';
-          onFinished();
+        eventCallback: (ev: any) => {
+          if (ev === null) {
+            // 곡 끝 도달
+            this.state = 'idle';
+            onFinished();
+            return;
+          }
+          onEvent(ev);
         },
       }
     );

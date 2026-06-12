@@ -19,7 +19,7 @@ function ensureSynths(): void {
       octaves: 6,
       envelope: { attack: 0.001, decay: 0.35, sustain: 0, release: 0.1 },
     }).toDestination();
-    bassSynth.volume.value = -6;
+    bassSynth.volume.value = 0;
   }
 
   if (!hihatSynth) {
@@ -32,7 +32,7 @@ function ensureSynths(): void {
       octaves: 1.5,
     }).toDestination();
     hihatSynth.frequency.value = 400;
-    hihatSynth.volume.value = -22;
+    hihatSynth.volume.value = -10;
   }
 }
 
@@ -66,10 +66,13 @@ export async function startPercussion(rhythm: string, bpm: number): Promise<void
   sequence = new Tone.Sequence<string>(
     (time: number, beat: string) => {
       if (beat === 'D') {
-        bassSynth?.triggerAttackRelease('C1', '16n', time);
+        // C1(약 32Hz)은 일반 스피커로 재생 불가 → C2(약 65Hz)로 상향
+        bassSynth?.triggerAttackRelease('C2', '8n', time);
       } else if (beat === 't') {
-        // MetalSynth은 주파수 기반 — 짧은 틱
-        hihatSynth?.triggerAttackRelease('16n', time);
+        // MetalSynth: triggerAttackRelease(note, duration, time) 시그니처.
+        // 기존 ('16n', time)은 '16n'을 음정·time을 duration·스케줄시각 누락으로
+        // 무음 + "scheduled callbacks should use passed-in time" 경고 유발.
+        hihatSynth?.triggerAttackRelease(400, '16n', time);
       }
       // '-' 는 무음
     },

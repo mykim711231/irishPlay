@@ -53,7 +53,6 @@ function buildCursorControl(
     onEvent(ev: any) {
       if (!ev || (ev.measureStart && ev.left === null)) return;
       const flat = ((ev.elements ?? []) as Element[][]).flat();
-      console.log('[onEvent] line=', ev.line, 'elements=', flat.length, 'attached=', flat[0] ? document.contains(flat[0]) : 'n/a');
       // 이전 커서 제거
       document.querySelectorAll('.abcjs-note.cur').forEach(n =>
         n.classList.remove('cur')
@@ -136,7 +135,6 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   const triggerPlay = useCallback(async () => {
     const t = tuneRef.current;
     const vobj = visualObjRef.current;
-    console.log('[play] triggerPlay t=', !!t, 'vobj=', !!vobj, 'state=', playStateRef.current);
     if (!t || !vobj) return;
 
     setPlayState('loading');
