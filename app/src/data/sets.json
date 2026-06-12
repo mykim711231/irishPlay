@@ -1,23 +1,1242 @@
 [
   {
-    "id": "set-03",
+    "id": "b1-s01",
     "book": 1,
-    "name": "Morning Dew Set",
-    "rhythm": "reel",
-    "tuneIds": ["morning-dew"]
-  },
-  {
-    "id": "set-07",
-    "book": 1,
-    "name": "Out on the Ocean Set",
+    "name": "The Haunted House / My Darling Asleep / Club Céilí",
     "rhythm": "jig",
-    "tuneIds": ["out-on-the-ocean"]
+    "tuneIds": [
+      "the-haunted-house-1098",
+      "my-darling-asleep-76",
+      "the-old-favourite-56"
+    ]
   },
   {
-    "id": "set-11",
+    "id": "b1-s02",
     "book": 1,
-    "name": "Britches Set",
+    "name": "Little Diamond / Murroe / The Maids Of Ardath",
     "rhythm": "polka",
-    "tuneIds": ["britches-full"]
+    "tuneIds": [
+      "the-little-diamond-604",
+      "the-murroe-1508",
+      "the-maids-of-ardagh-466"
+    ]
+  },
+  {
+    "id": "b1-s03",
+    "book": 1,
+    "name": "The Boyne Hunt / Shannon Breeze / The Red Haired Lass",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-boyne-hunt-142",
+      "rolling-in-the-ryegrass-87",
+      "the-red-haired-lass-1716"
+    ]
+  },
+  {
+    "id": "b1-s04",
+    "book": 1,
+    "name": "The Humours Of Glendart / Saddle The Pony / Tobin's Favourite",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-humours-of-glendart-45",
+      "saddle-the-pony-307",
+      "tobin-s-favourite-308"
+    ]
+  },
+  {
+    "id": "b1-s05",
+    "book": 1,
+    "name": "Tulla / The Skylark / Roaring Mary",
+    "rhythm": "polka",
+    "tuneIds": [
+      "tulla-21717",
+      "the-skylark-632",
+      "roaring-mary-762"
+    ]
+  },
+  {
+    "id": "b1-s06",
+    "book": 1,
+    "name": "The Brosna / O'Keefe's / Denis Murphy's",
+    "rhythm": "slide",
+    "tuneIds": [
+      "the-brosna-1414",
+      "o-keeffe-s-53",
+      "denis-murphy-s-159"
+    ]
+  },
+  {
+    "id": "b1-s07",
+    "book": 1,
+    "name": "The Maid Behind The Bar / Kilmaley / The Green Mountain",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-maid-behind-the-bar-64",
+      "glen-allen-14008",
+      "the-green-mountain-166"
+    ]
+  },
+  {
+    "id": "b1-s08",
+    "book": 1,
+    "name": "The Britches Full Of Stitches / The Armagh / Ballydesmond #3",
+    "rhythm": "polka",
+    "tuneIds": [
+      "the-britches-full-of-stitches-1075",
+      "john-ryan-s-441",
+      "the-ballydesmond-531"
+    ]
+  },
+  {
+    "id": "b1-s09",
+    "book": 1,
+    "name": "The Geese In The Bog / The Connachtman's Rambles / Out On The Ocean",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-geese-in-the-bog-43",
+      "the-connaughtman-s-rambles-19",
+      "out-on-the-ocean-108"
+    ]
+  },
+  {
+    "id": "b1-s10",
+    "book": 1,
+    "name": "Miss McLeod's / The Merry Blacksmith / The Sally Gardens",
+    "rhythm": "reel",
+    "tuneIds": [
+      "miss-mcleod-s-75",
+      "the-merry-blacksmith-72",
+      "the-sally-gardens-98"
+    ]
+  },
+  {
+    "id": "b1-s11",
+    "book": 1,
+    "name": "Jerry's Beaver Hat / The Kesh / The Rambling Pitchfork",
+    "rhythm": "jig",
+    "tuneIds": [
+      "jerry-s-beaver-hat-319",
+      "the-kesh-55",
+      "the-rambling-pitchfork-89"
+    ]
+  },
+  {
+    "id": "b1-s12",
+    "book": 1,
+    "name": "Sonny's / Shoe The Donkey",
+    "rhythm": "mazurka",
+    "tuneIds": [
+      "sonny-s-5476",
+      "shoe-the-donkey-2320"
+    ]
+  },
+  {
+    "id": "b1-s13",
+    "book": 1,
+    "name": "Jackie Coleman's / The Mountain Road / Cregg's Pipes",
+    "rhythm": "reel",
+    "tuneIds": [
+      "jackie-coleman-s-50",
+      "the-mountain-road-68",
+      "greig-s-pipes-605"
+    ]
+  },
+  {
+    "id": "b1-s14",
+    "book": 1,
+    "name": "The Queen Of The Fair / Pay The Reckoning / Carraroe",
+    "rhythm": "jig",
+    "tuneIds": [
+      "queen-of-the-fair-772",
+      "pay-the-reckoning-1805",
+      "the-carraroe-771"
+    ]
+  },
+  {
+    "id": "b1-s15",
+    "book": 1,
+    "name": "Sheehan's / Cameronian / The Foxhunter",
+    "rhythm": "reel",
+    "tuneIds": [
+      "sheehan-s-1178",
+      "the-cameronian-284",
+      "the-foxhunters-511"
+    ]
+  },
+  {
+    "id": "b1-s16",
+    "book": 1,
+    "name": "The Lark In The Morning / The Humours Of Ennistymon / The Wandering Minstrel",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-lark-in-the-morning-62",
+      "the-humours-of-ennistymon-228",
+      "the-wandering-minstrel-2025"
+    ]
+  },
+  {
+    "id": "b1-s17",
+    "book": 1,
+    "name": "The Boys Of Bluehill / Cork / Cronin's",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "the-boys-of-bluehill-651",
+      "the-harvest-home-49",
+      "cronin-s-478"
+    ]
+  },
+  {
+    "id": "b1-s18",
+    "book": 1,
+    "name": "The Earl's Chair / Tim Maloney's / The Ships Are Sailing",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-earl-s-chair-221",
+      "tim-maloney-s-621",
+      "the-ships-are-sailing-543"
+    ]
+  },
+  {
+    "id": "b1-s19",
+    "book": 1,
+    "name": "The Belltable",
+    "rhythm": "waltz",
+    "tuneIds": [
+      "the-belltable-5067"
+    ]
+  },
+  {
+    "id": "b1-s20",
+    "book": 1,
+    "name": "The Trip To Athlone / Langstrom's Pony / Sackows",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-trip-to-athlone-1301",
+      "langstrom-s-pony-61",
+      "tripping-up-the-stairs-111"
+    ]
+  },
+  {
+    "id": "b1-s21",
+    "book": 1,
+    "name": "The Concertina / Come West Along The Road / Anderson's",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-concertina-18",
+      "come-west-along-the-road-474",
+      "anderson-s-1631"
+    ]
+  },
+  {
+    "id": "b1-s22",
+    "book": 1,
+    "name": "Brendan Tonra's / The Kilavil / Ship In Full Sail",
+    "rhythm": "jig",
+    "tuneIds": [
+      "brendan-tonra-s-451",
+      "the-killavil-667",
+      "the-ships-in-full-sail-261"
+    ]
+  },
+  {
+    "id": "b1-s23",
+    "book": 1,
+    "name": "The Ballydesmond No. 2 / The Ballydesmond No. 1 / Peg Ryan's",
+    "rhythm": "polka",
+    "tuneIds": [
+      "the-ballydesmond-238",
+      "the-ballydesmond-2-239",
+      "egan-s-39"
+    ]
+  },
+  {
+    "id": "b1-s24",
+    "book": 1,
+    "name": "The Silver Spear / Father Kelly's / Miss Monaghan",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-silver-spear-182",
+      "father-kelly-s-791",
+      "miss-monaghan-471"
+    ]
+  },
+  {
+    "id": "b1-s25",
+    "book": 1,
+    "name": "Jim Ward's / The Blarney Pilgrim / The Cook In The Kitchen",
+    "rhythm": "jig",
+    "tuneIds": [
+      "jimmy-ward-s-793",
+      "the-blarney-pilgrim-5",
+      "the-cook-in-the-kitchen-808"
+    ]
+  },
+  {
+    "id": "b1-s26",
+    "book": 1,
+    "name": "Sonny Murray's / The Home Ruler / Kitty's Wedding",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "sonny-murray-s-309",
+      "the-home-ruler-310",
+      "kitty-s-wedding-869"
+    ]
+  },
+  {
+    "id": "b1-s27",
+    "book": 1,
+    "name": "Tabhair Dom Do Lámh",
+    "rhythm": "waltz",
+    "tuneIds": [
+      "tabhair-dom-do-lamh-454"
+    ]
+  },
+  {
+    "id": "b1-s28",
+    "book": 1,
+    "name": "Joe Cooley's / The Wise Maid / The Bird In The Bush",
+    "rhythm": "reel",
+    "tuneIds": [
+      "cooley-s-1",
+      "the-wise-maid-118",
+      "the-bird-in-the-bush-629"
+    ]
+  },
+  {
+    "id": "b1-s29",
+    "book": 1,
+    "name": "The Dusty Windowsills / The Cliffs Of Moher / The Rose In The Heather",
+    "rhythm": "jig",
+    "tuneIds": [
+      "dusty-windowsills-29",
+      "the-cliffs-of-moher-12",
+      "the-rose-in-the-heather-447"
+    ]
+  },
+  {
+    "id": "b1-s30",
+    "book": 1,
+    "name": "John Doherty's / Vincent Campbell's",
+    "rhythm": "mazurka",
+    "tuneIds": [
+      "tommy-peoples-1323",
+      "vincent-campbell-s-1332"
+    ]
+  },
+  {
+    "id": "b1-s31",
+    "book": 1,
+    "name": "Drowsie Maggie / The Glass Of Beer / Toss The Feathers / Toss The Feathers",
+    "rhythm": "reel",
+    "tuneIds": [
+      "drowsy-maggie-27",
+      "the-glass-of-beer-188",
+      "toss-the-feathers-113",
+      "toss-the-feathers-138"
+    ]
+  },
+  {
+    "id": "b1-s32",
+    "book": 1,
+    "name": "The Morning Lark / Joe Cooley's / Tom Billy's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-morning-lark-2060",
+      "seamus-cooley-s-414",
+      "the-flowers-of-spring-1283"
+    ]
+  },
+  {
+    "id": "b1-s33",
+    "book": 1,
+    "name": "The Long Note",
+    "rhythm": "slide",
+    "tuneIds": [
+      "the-long-note-1682"
+    ]
+  },
+  {
+    "id": "b1-s34",
+    "book": 1,
+    "name": "The Teetotaller / St. Anne's / The London Lasses",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-teetotaller-s-114",
+      "saint-anne-s-103",
+      "the-london-lasses-2273"
+    ]
+  },
+  {
+    "id": "b1-s35",
+    "book": 1,
+    "name": "The Kid On The Mountain / Jim Morrison's / Leitrim's Fancy",
+    "rhythm": "slip jig",
+    "tuneIds": [
+      "the-kid-on-the-mountain-52",
+      "morrison-s-71",
+      "the-leitrim-fancy-467"
+    ]
+  },
+  {
+    "id": "b1-s36",
+    "book": 1,
+    "name": "The Bank Of Ireland / The Woman Of The House / The Green Fields Of Rosbeigh",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-bank-of-ireland-320",
+      "the-woman-of-the-house-321",
+      "the-green-fields-of-rossbeigh-322"
+    ]
+  },
+  {
+    "id": "b1-s37",
+    "book": 1,
+    "name": "The Lilting Banshee / Haste To The Wedding / The Maid On The Green",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-lilting-banshee-60",
+      "haste-to-the-wedding-582",
+      "the-maid-on-the-green-1831"
+    ]
+  },
+  {
+    "id": "b1-s38",
+    "book": 1,
+    "name": "Over The Moor To Maggie / Lady Ann Montgomery / Maude Millar",
+    "rhythm": "reel",
+    "tuneIds": [
+      "over-the-moor-to-maggie-115",
+      "lady-anne-montgomery-59",
+      "maud-millar-1177"
+    ]
+  },
+  {
+    "id": "b1-s39",
+    "book": 1,
+    "name": "The Frost Is All Over / The Eavesdropper / Sixpenny Money",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-frost-is-all-over-448",
+      "the-eavesdropper-389",
+      "sixpenny-money-387"
+    ]
+  },
+  {
+    "id": "b1-s40",
+    "book": 1,
+    "name": "Sweeney's / Denis Murphy's / Maggie In The Wood",
+    "rhythm": "polka",
+    "tuneIds": [
+      "sweeney-s-1549",
+      "denis-murphy-s-357",
+      "maggie-in-the-woods-291"
+    ]
+  },
+  {
+    "id": "b1-s41",
+    "book": 1,
+    "name": "The Salamanca / The Banshee / The Sailor's Bonnet",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-salamanca-99",
+      "the-banshee-8",
+      "the-sailor-s-bonnet-570"
+    ]
+  },
+  {
+    "id": "b2-s01",
+    "book": 2,
+    "name": "Garrett Barry's / Michael Hynes's / The Boys Of The Town",
+    "rhythm": "jig",
+    "tuneIds": [
+      "garrett-barry-s-544",
+      "the-hag-s-purse-926",
+      "the-boys-of-the-town-1264"
+    ]
+  },
+  {
+    "id": "b2-s02",
+    "book": 2,
+    "name": "The Sailor On The Rock / The Hare's Paw / Sunny Banks",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-sailor-on-the-rock-765",
+      "the-hare-s-paw-1462",
+      "the-sunny-banks-1453"
+    ]
+  },
+  {
+    "id": "b2-s03",
+    "book": 2,
+    "name": "The Kerry / Lad O'Beirne's / The Bush On The Hill",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-whistling-postman-587",
+      "the-silver-vale-644",
+      "the-bush-on-the-hill-1305"
+    ]
+  },
+  {
+    "id": "b2-s04",
+    "book": 2,
+    "name": "Jenny Picking Cockles / Jenny's Wedding / Jenny's Chickens",
+    "rhythm": "reel",
+    "tuneIds": [
+      "jenny-picking-cockles-1357",
+      "jenny-s-wedding-1347",
+      "jenny-s-chickens-756"
+    ]
+  },
+  {
+    "id": "b2-s05",
+    "book": 2,
+    "name": "The Tar Road To Sligo / The Maid In The Meadow / Behind The Haystack",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-tar-road-to-sligo-151",
+      "the-maid-in-the-meadow-942",
+      "behind-the-haystack-358"
+    ]
+  },
+  {
+    "id": "b2-s06",
+    "book": 2,
+    "name": "Ryan's / The Drops Of Brandy / The Foxhunt",
+    "rhythm": "slip jig",
+    "tuneIds": [
+      "redican-s-mother-378",
+      "the-drops-of-brandy-388",
+      "the-foxhunter-482"
+    ]
+  },
+  {
+    "id": "b2-s07",
+    "book": 2,
+    "name": "The Old Kilfenora / The Hole In The Hedge / Flowers Of The Burren",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-north-clare-2292",
+      "the-hole-in-the-hedge-755",
+      "the-angry-peeler-4899"
+    ]
+  },
+  {
+    "id": "b2-s08",
+    "book": 2,
+    "name": "Memories Of Ballymote / Gurteen Cross / The Waves Of Tory",
+    "rhythm": "polka",
+    "tuneIds": [
+      "memories-of-ballymote-1560",
+      "the-gurteen-cross-1564",
+      "leather-away-the-wattle-o-2286"
+    ]
+  },
+  {
+    "id": "b2-s09",
+    "book": 2,
+    "name": "The Cup Of Tea / The New Copperplate / The Old Copperplate",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-cup-of-tea-20",
+      "the-new-copperplate-887",
+      "the-old-copperplate-410"
+    ]
+  },
+  {
+    "id": "b2-s10",
+    "book": 2,
+    "name": "The Tongs By The Fire / Strike The Gay Harp / Willie Coleman's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-tongs-by-the-fire-1569",
+      "strike-the-gay-harp-1216",
+      "willie-coleman-s-476"
+    ]
+  },
+  {
+    "id": "b2-s11",
+    "book": 2,
+    "name": "Donegal / The Peeler's Jacket / The Trip To Durrow",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-donegal-1621",
+      "the-peeler-s-jacket-1343",
+      "the-trip-to-durrow-891"
+    ]
+  },
+  {
+    "id": "b2-s12",
+    "book": 2,
+    "name": "O'Callaghan's / The Plains Of Boyle / The Rights Of Man",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "callaghan-s-1349",
+      "the-plains-of-boyle-652",
+      "the-rights-of-man-83"
+    ]
+  },
+  {
+    "id": "b2-s13",
+    "book": 2,
+    "name": "The Maids Of Mount Cisco / The Sligo Maid / The Swallow's Tail",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-maids-of-mount-kisco-432",
+      "the-sligo-maid-399",
+      "the-swallow-s-tail-105"
+    ]
+  },
+  {
+    "id": "b2-s14",
+    "book": 2,
+    "name": "Bill Collin's / The Kilmovee / The Cobbler",
+    "rhythm": "jig",
+    "tuneIds": [
+      "dan-collins-father-s-2217",
+      "the-kilmovee-2973",
+      "the-cobbler-1911"
+    ]
+  },
+  {
+    "id": "b2-s15",
+    "book": 2,
+    "name": "Kitty Gone A'Milking / The College Groves / The Green Fields Of America",
+    "rhythm": "reel",
+    "tuneIds": [
+      "kitty-goes-a-milking-1647",
+      "the-college-groves-1272",
+      "the-green-fields-of-america-695"
+    ]
+  },
+  {
+    "id": "b2-s16",
+    "book": 2,
+    "name": "Jackson's Morning Breeze / Christy Barry's No. 1 / Christy Barry's No. 2",
+    "rhythm": "jig",
+    "tuneIds": [
+      "jackson-s-morning-breeze-1510",
+      "christy-barry-s-843",
+      "the-butlers-of-glen-avenue-820"
+    ]
+  },
+  {
+    "id": "b2-s17",
+    "book": 2,
+    "name": "Swinging On The Gate / The Tinker's Daughter / The Hunter's House",
+    "rhythm": "reel",
+    "tuneIds": [
+      "swinging-on-the-gate-236",
+      "the-tinker-s-daughter-353",
+      "the-hunter-s-house-472"
+    ]
+  },
+  {
+    "id": "b2-s18",
+    "book": 2,
+    "name": "The Luck Penny / The Pipe On The Hob No. 1 / The Pipe On The Hob No. 2",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-luck-penny-1334",
+      "the-pipe-on-the-hob-1049",
+      "the-pipe-on-the-hob-81"
+    ]
+  },
+  {
+    "id": "b2-s19",
+    "book": 2,
+    "name": "Connemara Stockings / Jim McCormick's / The Clougher",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-connemara-stockings-614",
+      "the-westmeath-hunt-2269",
+      "rip-the-calico-719"
+    ]
+  },
+  {
+    "id": "b2-s20",
+    "book": 2,
+    "name": "The Star Above The Garter / Johnny Mickey's / The Dingle Regatta",
+    "rhythm": "slide",
+    "tuneIds": [
+      "the-star-above-the-garter-1398",
+      "johnny-mickey-s-4097",
+      "the-dingle-regatta-23"
+    ]
+  },
+  {
+    "id": "b2-s21",
+    "book": 2,
+    "name": "Health To The Ladies / The Rambler / When Sick Is It Tae You Want?",
+    "rhythm": "jig",
+    "tuneIds": [
+      "health-to-the-ladies-327",
+      "the-rambler-510",
+      "when-sick-is-it-tea-that-you-want-427"
+    ]
+  },
+  {
+    "id": "b2-s22",
+    "book": 2,
+    "name": "Martin Wynne's No. 1 / Martin Wynne's No. 2 / Martin Wynne's No. 3",
+    "rhythm": "reel",
+    "tuneIds": [
+      "martin-wynne-s-347",
+      "martin-wynne-s-359",
+      "martin-wynne-s-461"
+    ]
+  },
+  {
+    "id": "b2-s23",
+    "book": 2,
+    "name": "Brian Boru's / The Stone Of Destiny",
+    "rhythm": "jig",
+    "tuneIds": [
+      "brian-boru-s-march-271",
+      "stone-of-destiny-804"
+    ]
+  },
+  {
+    "id": "b2-s24",
+    "book": 2,
+    "name": "The Chicago / Castle Kelly / The Humours Of Ballyconnel",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-chicago-840",
+      "castle-kelly-21",
+      "the-humours-of-ballyconnell-1428"
+    ]
+  },
+  {
+    "id": "b2-s25",
+    "book": 2,
+    "name": "The Lilting Fisherman / Tell Her I Am / Going To The Well For Water",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-lilting-fisherman-3369",
+      "tell-her-i-am-161",
+      "going-to-the-well-for-water-455"
+    ]
+  },
+  {
+    "id": "b2-s26",
+    "book": 2,
+    "name": "Terry Teehan's / John Egan's / John Walsh's",
+    "rhythm": "polka",
+    "tuneIds": [
+      "newmarket-331",
+      "john-clifford-s-916",
+      "john-walsh-s-329"
+    ]
+  },
+  {
+    "id": "b2-s27",
+    "book": 2,
+    "name": "The Shaskeen / My Love Is In America / Tom Ward's Downfall",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-shaskeen-615",
+      "my-love-is-in-america-77",
+      "tom-ward-s-downfall-565"
+    ]
+  },
+  {
+    "id": "b2-s28",
+    "book": 2,
+    "name": "Paddy's Return / Kilfenora Jig No. 2 / Kilfenora Jig No. 3",
+    "rhythm": "jig",
+    "tuneIds": [
+      "kitty-lie-over-948",
+      "the-kilfenora-949",
+      "the-kilfenora-947"
+    ]
+  },
+  {
+    "id": "b2-s29",
+    "book": 2,
+    "name": "Traver's / The Bucks Of Oranmore / The Duke Of Leinster",
+    "rhythm": "reel",
+    "tuneIds": [
+      "hughie-travers-1518",
+      "the-bucks-of-oranmore-2",
+      "the-duke-of-leinster-1385"
+    ]
+  },
+  {
+    "id": "b2-s30",
+    "book": 2,
+    "name": "The Battering Ram / The Humours Of Drinagh / Gillian's Apples",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-battering-ram-382",
+      "the-humours-of-drinagh-413",
+      "gillan-s-apples-1855"
+    ]
+  },
+  {
+    "id": "b2-s31",
+    "book": 2,
+    "name": "The New Policeman / Lad O'Beirne's / The Wind That Shakes The Barley",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-belles-of-tipperary-769",
+      "lad-o-beirne-s-406",
+      "the-wind-that-shakes-the-barley-116"
+    ]
+  },
+  {
+    "id": "b2-s32",
+    "book": 2,
+    "name": "Lucy Farr's / The Stack Of Barley / Some Say The Devil Is Dead",
+    "rhythm": "barndance",
+    "tuneIds": [
+      "lucy-farr-s-1307",
+      "the-stack-of-barley-2224",
+      "the-keel-row-3637"
+    ]
+  },
+  {
+    "id": "b2-s33",
+    "book": 2,
+    "name": "Cronin's / Tommy Peoples' / The Galtee Rangers",
+    "rhythm": "reel",
+    "tuneIds": [
+      "speed-the-plough-901",
+      "tommy-peoples-1100",
+      "the-galtee-rangers-724"
+    ]
+  },
+  {
+    "id": "b2-s34",
+    "book": 2,
+    "name": "Off To California / The Liverpool / Murphy's",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "off-to-california-30",
+      "the-liverpool-1500",
+      "murphy-s-149"
+    ]
+  },
+  {
+    "id": "b2-s35",
+    "book": 2,
+    "name": "The Tarbolton / The Longford Collector / The Sailor's Bonnet",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-tarbolton-560",
+      "the-longford-collector-563",
+      "the-sailor-s-bonnet-570"
+    ]
+  },
+  {
+    "id": "b3-s01",
+    "book": 3,
+    "name": "Devanny's Goat / The Galway Rambler / Last Night's Fun",
+    "rhythm": "reel",
+    "tuneIds": [
+      "devanny-s-goat-2881",
+      "the-galway-rambler-634",
+      "last-night-s-fun-63"
+    ]
+  },
+  {
+    "id": "b3-s02",
+    "book": 3,
+    "name": "The Mug Of Brown Ale / The Leg Of The Duck / Munster Buttermilk",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-mug-of-brown-ale-888",
+      "daniel-of-the-sun-1317",
+      "munster-buttermilk-1077"
+    ]
+  },
+  {
+    "id": "b3-s03",
+    "book": 3,
+    "name": "McKeown's",
+    "rhythm": "polka",
+    "tuneIds": [
+      "mckeown-s-2181"
+    ]
+  },
+  {
+    "id": "b3-s04",
+    "book": 3,
+    "name": "The Banks Of Lough Gowna / The Gold Ring / Tommy Mulhaire's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-banks-of-lough-gowna-775",
+      "the-gold-ring-1351",
+      "castletown-connors-1433"
+    ]
+  },
+  {
+    "id": "b3-s05",
+    "book": 3,
+    "name": "Dick Sherlock's / The Morning Star / The Lady On The Island",
+    "rhythm": "reel",
+    "tuneIds": [
+      "dick-sherlock-s-1139",
+      "the-morning-star-828",
+      "the-lady-on-the-island-938"
+    ]
+  },
+  {
+    "id": "b3-s06",
+    "book": 3,
+    "name": "The Derry / Kit O'Mahony's / The Galway",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "the-derry-3250",
+      "kit-o-mahoney-s-5970",
+      "the-galway-38"
+    ]
+  },
+  {
+    "id": "b3-s07",
+    "book": 3,
+    "name": "Johnny I Do Miss You / Tripping To The Well / Bill Sullivan's",
+    "rhythm": "polka",
+    "tuneIds": [
+      "johnny-i-do-miss-you-2781",
+      "tripping-to-the-well-4158",
+      "bill-sullivan-s-481"
+    ]
+  },
+  {
+    "id": "b3-s08",
+    "book": 3,
+    "name": "The Old Kilfenora / Club Céilí / Jim Ward's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-north-clare-2292",
+      "the-old-favourite-56",
+      "jimmy-ward-s-793"
+    ]
+  },
+  {
+    "id": "b3-s09",
+    "book": 3,
+    "name": "George White's Favourite / The Boys Of Malin / The Gravel Walk",
+    "rhythm": "reel",
+    "tuneIds": [
+      "george-white-s-favourite-718",
+      "the-boys-of-malin-11",
+      "the-gravel-walks-42"
+    ]
+  },
+  {
+    "id": "b3-s10",
+    "book": 3,
+    "name": "A Nation Once Again / The Clare Dragoons",
+    "rhythm": "march",
+    "tuneIds": [
+      "a-nation-once-again-8124",
+      "clare-s-dragoons-777"
+    ]
+  },
+  {
+    "id": "b3-s11",
+    "book": 3,
+    "name": "The Tulla / The Siege Of Ennis / The Knockabower",
+    "rhythm": "polka",
+    "tuneIds": [
+      "the-siege-of-ennis-1640",
+      "the-rattlin-bog-583",
+      "the-knocknaboul-3023"
+    ]
+  },
+  {
+    "id": "b3-s12",
+    "book": 3,
+    "name": "The Doon / The Mountain Top / Fred Finn's",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-doon-438",
+      "the-mountain-top-529",
+      "fred-finn-s-452"
+    ]
+  },
+  {
+    "id": "b3-s13",
+    "book": 3,
+    "name": "Kathleen Hehir's / Merrily Kiss The Quaker / The Weaver's",
+    "rhythm": "slide",
+    "tuneIds": [
+      "cathleen-hehir-s-157",
+      "merrily-kiss-the-quaker-70",
+      "bill-the-weaver-s-1527"
+    ]
+  },
+  {
+    "id": "b3-s14",
+    "book": 3,
+    "name": "Around The Fairy Fort / The New Broom / If There Weren't Any Women In The World",
+    "rhythm": "barndance",
+    "tuneIds": [
+      "around-the-fairy-fort-2177",
+      "the-new-broom-1726",
+      "if-we-hadn-t-any-women-in-the-world-1376"
+    ]
+  },
+  {
+    "id": "b3-s15",
+    "book": 3,
+    "name": "The Kinnegad Slashers / The Blackthorn Stick / The Scotsman Over The Border",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-kinnegad-slashers-1258",
+      "the-blackthorn-stick-702",
+      "the-scotsman-over-the-border-548"
+    ]
+  },
+  {
+    "id": "b3-s16",
+    "book": 3,
+    "name": "The Old Blackthorn / The Mossy Banks / Jim Donohue's",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-old-blackthorn-720",
+      "the-mossy-banks-1846",
+      "jim-donoghue-s-2536"
+    ]
+  },
+  {
+    "id": "b3-s17",
+    "book": 3,
+    "name": "Shandon Bells / Father Kelly's / I Buried My Wife And Danced On Her Grave",
+    "rhythm": "jig",
+    "tuneIds": [
+      "shandon-bells-1200",
+      "father-kelly-s-2156",
+      "i-buried-my-wife-and-danced-on-her-grave-381"
+    ]
+  },
+  {
+    "id": "b3-s18",
+    "book": 3,
+    "name": "Farrell O'Gara / O'Rourke's / The Irish Girl",
+    "rhythm": "reel",
+    "tuneIds": [
+      "farrel-o-gara-s-234",
+      "o-rourke-s-90",
+      "the-irish-girl-844"
+    ]
+  },
+  {
+    "id": "b3-s19",
+    "book": 3,
+    "name": "Christmas Eve / The Killavil / The Boys Of Ballisodare",
+    "rhythm": "reel",
+    "tuneIds": [
+      "christmas-eve-440",
+      "mick-finn-s-1723",
+      "the-boys-of-ballisodare-535"
+    ]
+  },
+  {
+    "id": "b3-s20",
+    "book": 3,
+    "name": "Austin Tierney's / Rattigan's / John Brennan's",
+    "rhythm": "reel",
+    "tuneIds": [
+      "farewell-to-erin-846",
+      "rattigan-s-1449",
+      "john-brennan-s-404"
+    ]
+  },
+  {
+    "id": "b3-s21",
+    "book": 3,
+    "name": "Paddy Clancy's / The Maho Snaps / Paddy Taylor's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "paddy-clancy-s-832",
+      "the-maho-snaps-811",
+      "paddy-taylor-s-2719"
+    ]
+  },
+  {
+    "id": "b3-s22",
+    "book": 3,
+    "name": "Dick Gossip's / The Limestone Rock / The Boys Of Ballinahinch",
+    "rhythm": "reel",
+    "tuneIds": [
+      "dick-gossip-s-408",
+      "the-limestone-rock-1619",
+      "the-boys-of-ballinahinch-1348"
+    ]
+  },
+  {
+    "id": "b3-s23",
+    "book": 3,
+    "name": "The Fairy Queen / The Good Natured Man / The Belfast",
+    "rhythm": "hornpipe",
+    "tuneIds": [
+      "the-fairy-queen-630",
+      "the-good-natured-man-312",
+      "the-belfast-4"
+    ]
+  },
+  {
+    "id": "b3-s24",
+    "book": 3,
+    "name": "Micho Russell's / The Priest / The Cat's Rambles To The Child's Saucepan",
+    "rhythm": "slide",
+    "tuneIds": [
+      "michael-russell-s-958",
+      "the-priest-1765",
+      "the-cat-rambles-to-the-child-s-saucepan-365"
+    ]
+  },
+  {
+    "id": "b3-s25",
+    "book": 3,
+    "name": "Joe Bane's / Lucy Campbell / The Boys Of 45",
+    "rhythm": "reel",
+    "tuneIds": [
+      "frances-john-mcgovern-2804",
+      "lucy-campbell-1552",
+      "the-doonagore-2816"
+    ]
+  },
+  {
+    "id": "b3-s26",
+    "book": 3,
+    "name": "Top Of The Maol / The Scartaglen / The Leitrim",
+    "rhythm": "polka",
+    "tuneIds": [
+      "the-top-of-the-maol-3454",
+      "the-scartaglen-1764",
+      "the-leitrim-7313"
+    ]
+  },
+  {
+    "id": "b3-s27",
+    "book": 3,
+    "name": "The Pigeon On The Gate / The Flogging / Tie The Bonnet",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-pigeon-on-the-gate-517",
+      "the-flogging-195",
+      "tie-the-bonnet-136"
+    ]
+  },
+  {
+    "id": "b3-s28",
+    "book": 3,
+    "name": "Caileach An Airgid / The Bride's Favourite / Julia Clifford's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-hag-with-the-money-351",
+      "the-bride-s-favourite-3746",
+      "the-cordal-864"
+    ]
+  },
+  {
+    "id": "b3-s29",
+    "book": 3,
+    "name": "The Holly Bush / The Fermoy Lasses / Sporting Paddy",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-holly-bush-1566",
+      "the-fermoy-lasses-219",
+      "sporting-paddy-430"
+    ]
+  },
+  {
+    "id": "b3-s30",
+    "book": 3,
+    "name": "Fanny Power / Sí Beag Sí Mór",
+    "rhythm": "waltz",
+    "tuneIds": [
+      "fanny-power-957",
+      "si-bheag-si-mhor-449"
+    ]
+  },
+  {
+    "id": "b3-s31",
+    "book": 3,
+    "name": "Contentment Is Wealth / Father O'Flynn / I Will If I Can",
+    "rhythm": "jig",
+    "tuneIds": [
+      "contentment-is-wealth-1662",
+      "father-o-flynn-1080",
+      "i-will-if-i-can-1248"
+    ]
+  },
+  {
+    "id": "b3-s32",
+    "book": 3,
+    "name": "Crowley's / Crowley's / The Blackberry Blossom",
+    "rhythm": "reel",
+    "tuneIds": [
+      "crowley-s-759",
+      "crowley-s-1180",
+      "the-blackberry-blossom-1365"
+    ]
+  },
+  {
+    "id": "b3-s33",
+    "book": 3,
+    "name": "Keel Row Fling / The High Road To Linton / Green Grow The Rushes",
+    "rhythm": "strathspey",
+    "tuneIds": [
+      "the-keel-row-3637",
+      "the-high-road-to-linton-1118",
+      "green-grow-the-rushes-1936"
+    ]
+  },
+  {
+    "id": "b3-s34",
+    "book": 3,
+    "name": "Mulqueen's / The Little Bag Of Spuds / Charlie Harris's",
+    "rhythm": "reel",
+    "tuneIds": [
+      "mulqueeney-s-66",
+      "the-bag-of-potatoes-391",
+      "john-blessing-s-4620"
+    ]
+  },
+  {
+    "id": "b3-s35",
+    "book": 3,
+    "name": "The Kilfenora / John Joe's",
+    "rhythm": "slide",
+    "tuneIds": [
+      "kilfenora-7541",
+      "the-kerry-jig-2188"
+    ]
+  },
+  {
+    "id": "b3-s36",
+    "book": 3,
+    "name": "The Stone Of Destiny / The Road To Garrison",
+    "rhythm": "reel",
+    "tuneIds": [
+      "stone-of-destiny-804",
+      "the-road-to-garrison-2698"
+    ]
+  },
+  {
+    "id": "b3-s37",
+    "book": 3,
+    "name": "Lurgadán / The Mist Covered Mountain / Eddie Moloney's",
+    "rhythm": "jig",
+    "tuneIds": [
+      "the-luachrachan-s-1851",
+      "the-mist-covered-mountain-256",
+      "whelan-s-old-sow-3002"
+    ]
+  },
+  {
+    "id": "b3-s38",
+    "book": 3,
+    "name": "The Otter's Holt / Music In The Glen / The Virginia",
+    "rhythm": "reel",
+    "tuneIds": [
+      "the-otter-s-holt-636",
+      "music-in-the-glen-303",
+      "the-virginia-812"
+    ]
   }
 ]
