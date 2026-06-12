@@ -52,12 +52,14 @@ function buildCursorControl(
     onStart() {},
     onEvent(ev: any) {
       if (!ev || (ev.measureStart && ev.left === null)) return;
+      const flat = ((ev.elements ?? []) as Element[][]).flat();
+      console.log('[onEvent] line=', ev.line, 'elements=', flat.length, 'attached=', flat[0] ? document.contains(flat[0]) : 'n/a');
       // 이전 커서 제거
       document.querySelectorAll('.abcjs-note.cur').forEach(n =>
         n.classList.remove('cur')
       );
       // 현재 음표 하이라이트
-      ((ev.elements ?? []) as Element[][]).flat().forEach(el => {
+      flat.forEach(el => {
         el?.classList?.add('cur');
       });
       onEventCb(ev);
@@ -71,16 +73,22 @@ function buildCursorControl(
   };
 }
 
-/** 현재 재생 줄 하이라이트 + 자동 스크롤 */
+/** 현재 재생 줄 하이라이트 + 자동 스크롤 + focus 모드 cur-line 마킹 */
 function markCurrentLine(ev: any): void {
   document.querySelectorAll('.system-hl').forEach(el =>
     el.classList.remove('system-hl')
   );
+  document.querySelectorAll('.abcjs-staff-wrapper.cur-line').forEach(el =>
+    el.classList.remove('cur-line')
+  );
+
   const lineIdx: number = ev?.line ?? 0;
-  const staves = document.querySelectorAll('.abc-paper .abcjs-staff');
+  // abcjs 실제 DOM 클래스: .abcjs-staff-wrapper (not .abcjs-staff)
+  const staves = document.querySelectorAll('.abcjs-staff-wrapper');
   const staff = staves[lineIdx];
   if (staff) {
     staff.classList.add('system-hl');
+    staff.classList.add('cur-line');
     staff.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
@@ -128,6 +136,7 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   const triggerPlay = useCallback(async () => {
     const t = tuneRef.current;
     const vobj = visualObjRef.current;
+    console.log('[play] triggerPlay t=', !!t, 'vobj=', !!vobj, 'state=', playStateRef.current);
     if (!t || !vobj) return;
 
     setPlayState('loading');
@@ -232,7 +241,12 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   const handleSetPercussion = useCallback((v: boolean) => {
     setPercEnabledState(v);
     setPercEnabledAudio(v);
-    if (!v) stopPercussion();
+    if (!v) {
+      stopPercussion();
+    } else if (playStateRef.current === 'playing' && tuneRef.current) {
+      // 재생 중 퍼커션 활성화 → 즉시 시작
+      void startPercussion(tuneRef.current.rhythm, bpmRef.current);
+    }
   }, []);
 
   return {

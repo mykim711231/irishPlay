@@ -56,10 +56,11 @@ svg .abcjs-note.cur ellipse {
 body.focus .abcjs-staff-extra {
   opacity: 0.18;
 }
-body.focus svg .abcjs-l:not(.cur-line) {
+/* abcjs 실제 DOM: .abcjs-staff-wrapper (not .abcjs-l) */
+body.focus svg .abcjs-staff-wrapper:not(.cur-line) {
   opacity: 0.18;
 }
-body.focus .abcjs-l.cur-line {
+body.focus svg .abcjs-staff-wrapper.cur-line {
   opacity: 1;
 }
 

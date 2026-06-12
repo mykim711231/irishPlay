@@ -26,9 +26,8 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
     // §10: renderAbc로 악보 렌더 + visualObj 반환
     const visualObjs = abcjs.renderAbc(paperId, tune.abc, {
       add_classes: true,
-      responsive: 'resize',
-      // 줄 변경이 cursor 이벤트에 포함되도록
-      clickListener: () => {},
+      // responsive:'resize' 제거 — abcjs가 SVG를 재렌더링하면 visualObj DOM 참조가
+      // stale 되어 TimingCallbacks.onEvent의 ev.elements가 detached element를 가리킴
     } as any);
 
     if (visualObjs && visualObjs[0]) {
