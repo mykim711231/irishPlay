@@ -32,8 +32,7 @@ export const SetPlayer: React.FC<SetPlayerProps> = ({
   const navigate = useNavigate();
 
   const setInfo = (setsData as SetItem[]).find(s => s.id === setId);
-  // 세로 모드 (< 400px)에서는 숨김
-  if (!setInfo || setInfo.tuneIds.length <= 1 || (typeof window !== 'undefined' && window.innerWidth < 400)) return null;
+  if (!setInfo || setInfo.tuneIds.length <= 1) return null;
 
   const tunesInSet = setInfo.tuneIds
     .map(tid => (tunesData as TuneItem[]).find(t => t.id === tid))

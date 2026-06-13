@@ -29,7 +29,7 @@ function ensureSynths(): void {
       octaves: 6,
       envelope: { attack: 0.001, decay: 0.35, sustain: 0, release: 0.1 },
     }).toDestination();
-    bassSynth.volume.value = 0;
+    bassSynth.volume.value = -6;
   }
 
   if (!hihatSynth) {
