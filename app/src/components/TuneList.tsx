@@ -211,9 +211,17 @@ export const TuneList: React.FC = () => {
 
                       return (
                         <li key={`${tune.id}-${tune.setId}`}>
-                          <button
+                          <div
+                            role="button"
+                            tabIndex={0}
                             onClick={() => navigate(`/tune/${tune.id}`)}
-                            className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
+                            onKeyDown={e => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigate(`/tune/${tune.id}`);
+                              }
+                            }}
+                            className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99] cursor-pointer"
                             style={{ background: 'var(--paper)' }}
                           >
                             {/* 아이콘 */}
@@ -246,7 +254,7 @@ export const TuneList: React.FC = () => {
 
                             {/* ★ 즐겨찾기 버튼 */}
                             <button
-                              onClick={e => toggleFavorite(tune.id, e)}
+                              onClick={e => { e.stopPropagation(); toggleFavorite(tune.id, e); }}
                               aria-label={starred ? '즐겨찾기 제거' : '즐겨찾기 추가'}
                               aria-pressed={starred}
                               className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-all active:scale-90"
@@ -263,7 +271,7 @@ export const TuneList: React.FC = () => {
                             </button>
 
                             <ChevronRight size={16} style={{ color: 'var(--line)', flexShrink: 0 }} />
-                          </button>
+                          </div>
                         </li>
                       );
                     })}
