@@ -7,11 +7,13 @@ import type { Tune } from '../hooks/usePlayback';
 interface ScoreViewProps {
   tune: Tune;
   onVisualObjReady: (visualObj: any) => void;
+  onScoreClick?: () => void;
 }
 
 export const ScoreView: React.FC<ScoreViewProps> = ({
   tune,
   onVisualObjReady,
+  onScoreClick,
 }) => {
   const uid = useId();
   const paperId = `abc-paper-${uid.replace(/:/g, '')}`;
@@ -56,12 +58,13 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="score-section flex-1 overflow-auto px-2 py-3 sm:px-3"
+      className="score-section flex-1 overflow-auto px-2 py-3 sm:px-3 cursor-pointer"
       style={{
         background: 'var(--bg)',
         minHeight: 0,
         WebkitOverflowScrolling: 'touch', // iOS 부드러운 스크롤
       }}
+      onClick={onScoreClick}
     >
       <div
         id={paperId}

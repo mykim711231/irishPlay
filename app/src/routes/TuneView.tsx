@@ -48,6 +48,23 @@ export default function TuneView(): JSX.Element {
       toggleLoop: playback.toggleLoop,
     });
 
+  // 메뉴 숨김 상태 (악보 탭으로 토글)
+  const [menuVisible, setMenuVisible] = useState(true);
+  const hideMenuTimer = useRef<NodeJS.Timeout>();
+
+  const handleScoreClick = useCallback(() => {
+    setMenuVisible(v => !v);
+    // 자동 숨김 해제 (5초 후)
+    if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
+    hideMenuTimer.current = setTimeout(() => setMenuVisible(true), 5000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
+    };
+  }, []);
+
   // 곡이 바뀌면 연습 모드 초기화
   useEffect(() => {
     resetMode();
@@ -81,23 +98,26 @@ export default function TuneView(): JSX.Element {
       className="flex flex-col h-full overflow-hidden"
       style={{ background: 'var(--bg)' }}
     >
-      {/* §9 TopBar */}
-      <TopBar
-        tune={tune}
-        setName={setName}
-        viewMode={mode}
-        onToggleMode={toggleMode}
-        onBack={() => {
-          playback.stop();
-          navigate('/');
-        }}
-      />
+      {/* §9 TopBar — 메뉴 숨김 시 숨김 */}
+      {menuVisible && (
+        <TopBar
+          tune={tune}
+          setName={setName}
+          viewMode={mode}
+          onToggleMode={toggleMode}
+          onBack={() => {
+            playback.stop();
+            navigate('/');
+          }}
+        />
+      )}
 
-      {/* §10 ScoreView — flex-1로 남은 공간 최대 점유 */}
-      <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} />
+      {/* §10 ScoreView — flex-1로 남은 공간 최대 점유 (탭으로 메뉴 토글) */}
+      <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} onScoreClick={handleScoreClick} />
 
-      {/* 하단 컨트롤 영역 — flex-none으로 고정 높이 유지 */}
-      <div className="controls-wrapper flex-none">
+      {/* 하단 컨트롤 영역 — 메뉴 숨김 시 숨김 */}
+      {menuVisible && (
+        <div className="controls-wrapper flex-none">
         {/* 세트 내 곡 이동 */}
         <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
 
@@ -125,6 +145,7 @@ export default function TuneView(): JSX.Element {
           Ceoltóirí Éireann.
         </footer>
       </div>
+      )}
     </div>
   );
 }
