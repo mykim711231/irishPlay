@@ -20,13 +20,13 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const sectionRef = useRef<HTMLElement>(null);
 
   // staffwidth를 반응형으로 설정 → 모바일/태블릿/데스크톱 모두 최적화
-  // 모바일 세로: 더 작은 악보 / 모바일 가로: 중간 크기 / 데스크톱: 850px (좌우 스크롤)
+  // 모바일 세로: 4~5마디 / 모바일 가로: 중간 크기 / 데스크톱: 850px (좌우 스크롤)
   const renderScore = useCallback((containerWidth: number) => {
     if (!tune.abc) return;
     let staffwidth: number;
     if (containerWidth < 400) {
-      // 모바일 세로 (≤399px): 더 작은 악보 (전체 컨트롤이 화면에 들어가도록)
-      staffwidth = Math.max(220, containerWidth - 20);
+      // 모바일 세로 (≤399px): 4~5마디 (컨트롤 패널과 악보 균형)
+      staffwidth = Math.max(200, containerWidth - 30);
     } else if (containerWidth < 500) {
       // 모바일 가로 (400-499px): 중간 크기
       staffwidth = Math.max(350, containerWidth - 20);
