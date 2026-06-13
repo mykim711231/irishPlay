@@ -58,13 +58,11 @@ export default function TuneView(): JSX.Element {
     }
   });
 
-  // 컨트롤 펼침/접힘 상태 (localStorage에 저장, 모바일은 기본 접힘)
+  // 컨트롤 펼침/접힘 상태 (localStorage에 저장, 기본 펼침)
   const [controlsExpanded, setControlsExpanded] = useState(() => {
     try {
       const saved = localStorage.getItem('irishPlay_controlsExpanded');
-      if (saved !== null) return saved === 'true';
-      // 처음 접속 시: 모바일(480px 이하)은 접혀있음, 데스크톱은 펼쳐있음
-      return typeof window !== 'undefined' ? window.innerWidth >= 480 : true;
+      return saved === null ? true : saved === 'true';
     } catch {
       return true;
     }

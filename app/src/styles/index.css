@@ -88,16 +88,17 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   /* flex-1은 Tailwind 클래스로 적용, minHeight: 0은 인라인으로 적용 */
 }
 
-/* ── 모바일 반응형 ── */
+/* ── 모바일 반응형 (세로/가로 모두 지원) ── */
 @media (max-width: 768px) {
-  /* 악보 섹션: 화면의 최소 40vh 확보 */
+  /* 악보 섹션: 모바일에서 flex로 크기 조정 */
   .score-section {
-    min-height: 40vh;
+    min-height: auto;
+    flex: 1;
   }
 
-  /* abc-paper: 모바일 최소 높이 */
+  /* abc-paper: 모바일 최소 높이 축소 */
   .abc-paper {
-    min-height: 200px;
+    min-height: 150px;
     border-radius: 8px;
   }
 
@@ -108,94 +109,84 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   }
 }
 
-/* 모바일 스마트폰 최적화 (375~480px, 일반 스마트폰) */
+/* 모바일 세로/가로 최적화 (393-480px 너비) */
 @media (max-width: 480px) {
-  /* SetPlayer: 패딩 축소, 갭 축소 */
+  /* TopBar 패딩 축소 */
+  header {
+    padding: 8px 12px !important;
+  }
+
+  /* SetPlayer: 컴팩트 */
   .set-player {
-    padding: 6px 12px !important;
-    gap: 4px !important;
+    padding: 4px 12px !important;
   }
 
   .set-player > p {
-    margin-bottom: 6px !important;
-    font-size: 0.7rem !important;
+    margin-bottom: 4px !important;
+    font-size: 0.65rem !important;
   }
 
   .set-player > div {
-    gap: 6px !important;
-    padding-bottom: 0 !important;
+    gap: 4px !important;
   }
 
   .set-player > div button {
-    padding: 8px 10px !important;
-    font-size: 0.7rem !important;
+    padding: 6px 8px !important;
+    font-size: 0.65rem !important;
   }
 
-  /* PlayerControls: 패딩 축소, 갭 축소 */
+  /* PlayerControls: 컴팩트 */
   .player-controls {
-    padding: 8px 12px !important;
-    gap: 8px !important;
+    padding: 6px 12px !important;
+    gap: 6px !important;
   }
 
   .player-controls > div:nth-child(1) {
-    gap: 6px !important;
+    gap: 4px !important;
   }
 
-  /* 재생/정지 버튼: 약간 축소 */
+  /* 버튼 크기 조정 */
   .player-controls button:nth-child(2) {
-    width: 48px !important;
-    height: 48px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
-  /* 다른 제어 버튼: 축소 */
   .player-controls button:nth-child(1),
   .player-controls button:nth-child(3),
   .player-controls button:nth-child(5) {
-    width: 36px !important;
-    height: 36px !important;
+    width: 32px !important;
+    height: 32px !important;
   }
 
-  /* BPM 슬라이더: 모바일에서 높이 증대 (터치 쉽게) */
+  /* BPM 슬라이더 */
   .player-controls input[type="range"] {
-    height: 8px !important;
+    height: 6px !important;
   }
 
-  /* 빠른속도 칩: 패딩 증대 */
+  /* 빠른속도 칩 */
   .player-controls > div:nth-child(2) > button {
-    padding: 8px 12px !important;
-    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+    font-size: 0.65rem !important;
   }
 
-  /* 연습 모드 컨테이너: 높이 증대 */
+  /* 연습 모드 */
   .practice-mode-buttons {
-    gap: 6px !important;
+    gap: 4px !important;
   }
 
   .practice-mode-buttons > button {
-    padding: 8px 10px !important;
-    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+    font-size: 0.6rem !important;
   }
 
-  /* 토글 버튼: 모바일에서 더 크게 (터치하기 쉽게) */
+  /* 토글 버튼 */
   .controls-toggle {
-    padding: 10px 12px !important;
-    font-size: 0.8rem !important;
-    min-height: 44px !important;
+    padding: 6px 12px !important;
+    font-size: 0.7rem !important;
   }
 
-  /* ControlTray: 모바일 컴팩트 */
+  /* ControlTray 패딩 축소 */
   .controls-wrapper {
     max-height: 50vh !important;
-  }
-}
-
-/* 매우 작은 화면 (390px 이하, 일반 스마트폰 세로) */
-@media (max-width: 390px) {
-  .score-section {
-    min-height: 45vh;
-  }
-
-  .controls-wrapper {
-    max-height: 48vh;
   }
 }

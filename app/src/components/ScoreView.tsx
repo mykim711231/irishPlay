@@ -19,16 +19,19 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const paperId = `abc-paper-${uid.replace(/:/g, '')}`;
   const sectionRef = useRef<HTMLElement>(null);
 
-  // staffwidth를 반응형으로 설정 → 모바일/데스크톱 모두 최적화
-  // 모바일: 화면 너비의 90% / 데스크톱: 850px (좌우 스크롤)
+  // staffwidth를 반응형으로 설정 → 모바일/태블릿/데스크톱 모두 최적화
+  // 모바일 세로: 더 작은 악보 / 모바일 가로: 중간 크기 / 데스크톱: 850px (좌우 스크롤)
   const renderScore = useCallback((containerWidth: number) => {
     if (!tune.abc) return;
     let staffwidth: number;
-    if (containerWidth < 500) {
-      // 모바일 (스마트폰): 화면 너비에 맞춤 + 여유 20px
-      staffwidth = Math.max(280, containerWidth - 20);
+    if (containerWidth < 400) {
+      // 모바일 세로 (≤399px): 더 작은 악보 (전체 컨트롤이 화면에 들어가도록)
+      staffwidth = Math.max(220, containerWidth - 20);
+    } else if (containerWidth < 500) {
+      // 모바일 가로 (400-499px): 중간 크기
+      staffwidth = Math.max(350, containerWidth - 20);
     } else {
-      // 태블릿/데스크톱: 고정값 (스크롤 가능)
+      // 태블릿/데스크톱 (≥500px): 고정값 (스크롤 가능)
       staffwidth = 850;
     }
     const visualObjs = abcjs.renderAbc(paperId, tune.abc, {
