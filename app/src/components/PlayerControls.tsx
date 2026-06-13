@@ -1,11 +1,15 @@
-// sf3-generated | PlayerControls: 재생 컨트롤 바 (▶/⏸, ■, 루프, BPM, 트레이 토글)
+// sf3-generated | PlayerControls: 재생 컨트롤 바 (▶/⏸, ■, 루프, BPM, 트레이 토글, 연습 모드)
 
 import React from 'react';
 import { Play, Pause, Square, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react';
 import type { PlaybackHandle } from '../hooks/usePlayback';
+import type { PracticeMode } from '../hooks/usePracticeMode';
+import { PRACTICE_LABELS } from '../hooks/usePracticeMode';
 
 interface PlayerControlsProps {
   playback: PlaybackHandle;
+  practiceMode: PracticeMode;
+  onPracticeModeChange: (mode: PracticeMode) => void;
 }
 
 // §9 빠른속도 칩: 50% / 기본 / 세션×1.15
@@ -15,7 +19,13 @@ const BPM_PRESETS: Array<{ label: string; factor: number }> = [
   { label: '세션×1.15', factor: 1.15 },
 ];
 
-export const PlayerControls: React.FC<PlayerControlsProps> = ({ playback }) => {
+const PRACTICE_MODES: PracticeMode[] = ['normal', 'slow', 'gradual'];
+
+export const PlayerControls: React.FC<PlayerControlsProps> = ({
+  playback,
+  practiceMode,
+  onPracticeModeChange,
+}) => {
   const {
     playState, bpm, tuneDefaultBpm, isLooping, trayOpen,
     setBpm, toggleLoop, setTrayOpen, play, pause, stop,
@@ -149,6 +159,34 @@ export const PlayerControls: React.FC<PlayerControlsProps> = ({ playback }) => {
             {p.label}
           </button>
         ))}
+      </div>
+
+      {/* 연습 모드 선택 */}
+      <div className="flex items-center gap-1.5">
+        <span
+          className="text-xs flex-shrink-0"
+          style={{ color: 'var(--dim)', width: 28 }}
+        >
+          연습
+        </span>
+        {PRACTICE_MODES.map(m => {
+          const active = practiceMode === m;
+          return (
+            <button
+              key={m}
+              onClick={() => onPracticeModeChange(m)}
+              aria-pressed={active}
+              className="flex-1 py-1 rounded-full text-xs font-medium transition-all"
+              style={{
+                background: active ? 'var(--teal)' : 'var(--bg)',
+                color:      active ? '#fff' : 'var(--ink)',
+                border:     `1px solid ${active ? 'var(--teal)' : 'var(--line)'}`,
+              }}
+            >
+              {PRACTICE_LABELS[m]}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
-// sf3-generated | TuneList: 곡 목록 화면
+// sf3-generated | TuneList: 곡 목록 화면 (즐겨찾기 기능 포함)
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, ChevronRight } from 'lucide-react';
+import { Music, ChevronRight, Star } from 'lucide-react';
 import tunesData from '../data/tunes.json';
 import setsData from '../data/sets.json';
 import { SearchBar } from './SearchBar';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface TuneItem {
   id: string;
@@ -35,8 +36,11 @@ const RHYTHM_COLOR: Record<string, string> = {
 
 export const TuneList: React.FC = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery]     = useState('');
   const [selectedRhythm, setSelectedRhythm] = useState('');
+  const [favOnly, setFavOnly]             = useState(false);
+
+  const { isFavorite, toggleFavorite, count: favCount } = useFavorites();
 
   const handleSearch = useCallback((q: string) => setSearchQuery(q), []);
   const handleRhythm = useCallback((r: string) => setSelectedRhythm(r), []);
@@ -51,11 +55,12 @@ export const TuneList: React.FC = () => {
 
   const filteredTunes = useMemo(() => {
     return allTunes.filter(t => {
-      const titleMatch = t.title.toLowerCase().includes(searchQuery);
+      const titleMatch  = t.title.toLowerCase().includes(searchQuery);
       const rhythmMatch = !selectedRhythm || t.rhythm === selectedRhythm;
-      return titleMatch && rhythmMatch;
+      const favMatch    = !favOnly || isFavorite(t.id);
+      return titleMatch && rhythmMatch && favMatch;
     });
-  }, [allTunes, searchQuery, selectedRhythm]);
+  }, [allTunes, searchQuery, selectedRhythm, favOnly, isFavorite]);
 
   return (
     <div
@@ -71,9 +76,9 @@ export const TuneList: React.FC = () => {
           borderBottom: '1px solid var(--line)',
         }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="text-2xl">☘️</span>
-          <div>
+          <div className="flex-1 min-w-0">
             <h1
               className="font-display font-semibold leading-tight"
               style={{ fontSize: '1.1rem', color: 'var(--ink)' }}
@@ -85,6 +90,26 @@ export const TuneList: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* 즐겨찾기만 보기 토글 */}
+        <button
+          onClick={() => setFavOnly(v => !v)}
+          aria-label={favOnly ? '전체 보기' : '즐겨찾기만 보기'}
+          aria-pressed={favOnly}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium flex-shrink-0 transition-all"
+          style={{
+            background:  favOnly ? '#fef3c7' : 'var(--bg)',
+            border:      `1.5px solid ${favOnly ? '#f59e0b' : 'var(--line)'}`,
+            color:       favOnly ? '#b45309' : 'var(--dim)',
+          }}
+        >
+          <Star
+            size={13}
+            fill={favOnly ? '#f59e0b' : 'none'}
+            stroke={favOnly ? '#f59e0b' : 'currentColor'}
+          />
+          {favOnly ? `${favCount}` : '★'}
+        </button>
       </header>
 
       {/* 검색 바 */}
@@ -92,7 +117,7 @@ export const TuneList: React.FC = () => {
         onSearch={handleSearch}
         onRhythmChange={handleRhythm}
         resultCount={filteredTunes.length}
-        totalCount={allTunes.length}
+        totalCount={favOnly ? favCount : allTunes.length}
       />
 
       {/* 곡 목록 */}
@@ -103,55 +128,81 @@ export const TuneList: React.FC = () => {
             style={{ color: 'var(--dim)' }}
           >
             <Music size={36} style={{ opacity: 0.3 }} />
-            <p style={{ fontSize: '0.9rem' }}>검색 결과 없음</p>
+            <p style={{ fontSize: '0.9rem' }}>
+              {favOnly ? '즐겨찾기가 없습니다' : '검색 결과 없음'}
+            </p>
+            {favOnly && (
+              <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                곡 옆 ★ 버튼으로 추가하세요
+              </p>
+            )}
           </div>
         ) : (
-        <ul className="flex flex-col gap-1">
-          {filteredTunes.map(tune => {
-            const setInfo = setMap[tune.setId];
-            const rhythmColor = RHYTHM_COLOR[tune.rhythm] ?? 'var(--teal)';
+          <ul className="flex flex-col gap-1">
+            {filteredTunes.map(tune => {
+              const setInfo    = setMap[tune.setId];
+              const rhythmColor = RHYTHM_COLOR[tune.rhythm] ?? 'var(--teal)';
+              const starred    = isFavorite(tune.id);
 
-            return (
-              <li key={`${tune.id}-${tune.setId}`}>
-                <button
-                  onClick={() => navigate(`/tune/${tune.id}`)}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
-                  style={{ background: 'var(--paper)' }}
-                >
-                  {/* 아이콘 */}
-                  <div
-                    className="flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
-                    style={{ background: `${rhythmColor}18` }}
+              return (
+                <li key={`${tune.id}-${tune.setId}`}>
+                  <button
+                    onClick={() => navigate(`/tune/${tune.id}`)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
+                    style={{ background: 'var(--paper)' }}
                   >
-                    <Music size={18} style={{ color: rhythmColor }} />
-                  </div>
-
-                  {/* 곡 정보 */}
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className="font-medium truncate leading-tight"
-                      style={{ color: 'var(--ink)', fontSize: '0.9rem' }}
+                    {/* 아이콘 */}
+                    <div
+                      className="flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
+                      style={{ background: `${rhythmColor}18` }}
                     >
-                      {tune.title}
-                    </p>
-                    <p className="text-xs truncate" style={{ color: 'var(--dim)' }}>
-                      <span className="font-semibold" style={{ color: rhythmColor }}>
-                        {tune.rhythm}
-                      </span>
-                      {' · '}
-                      {tune.key}
-                      {' · '}
-                      p.{tune.page}
-                      {setInfo && ` · ${setInfo.name}`}
-                    </p>
-                  </div>
+                      <Music size={18} style={{ color: rhythmColor }} />
+                    </div>
 
-                  <ChevronRight size={16} style={{ color: 'var(--line)', flexShrink: 0 }} />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                    {/* 곡 정보 */}
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="font-medium truncate leading-tight"
+                        style={{ color: 'var(--ink)', fontSize: '0.9rem' }}
+                      >
+                        {tune.title}
+                      </p>
+                      <p className="text-xs truncate" style={{ color: 'var(--dim)' }}>
+                        <span className="font-semibold" style={{ color: rhythmColor }}>
+                          {tune.rhythm}
+                        </span>
+                        {' · '}
+                        {tune.key}
+                        {' · '}
+                        p.{tune.page}
+                        {setInfo && ` · ${setInfo.name}`}
+                      </p>
+                    </div>
+
+                    {/* ★ 즐겨찾기 버튼 */}
+                    <button
+                      onClick={e => toggleFavorite(tune.id, e)}
+                      aria-label={starred ? '즐겨찾기 제거' : '즐겨찾기 추가'}
+                      aria-pressed={starred}
+                      className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-all active:scale-90"
+                      style={{
+                        background: starred ? '#fef3c7' : 'transparent',
+                        border: 'none',
+                      }}
+                    >
+                      <Star
+                        size={16}
+                        fill={starred ? '#f59e0b' : 'none'}
+                        stroke={starred ? '#f59e0b' : 'var(--line)'}
+                      />
+                    </button>
+
+                    <ChevronRight size={16} style={{ color: 'var(--line)', flexShrink: 0 }} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </main>
 
