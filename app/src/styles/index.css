@@ -190,3 +190,36 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
     max-height: 50vh !important;
   }
 }
+
+/* ── 스마트폰 좌우 2칼럼 레이아웃 (< 768px) ── */
+@media (max-width: 767px) {
+  /* 메인 콘텐츠 영역: 좌우로 정렬 */
+  .tune-content {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  /* 좌측 악보 */
+  .score-section {
+    flex: 1;
+    min-width: 0;
+    border-right: 1px solid var(--line);
+  }
+
+  /* 우측 컨트롤 */
+  .compact-controls {
+    flex: 0 0 280px;
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 악보 최소 높이 축소 */
+  .abc-paper {
+    min-height: 100px;
+  }
+
+  /* 데스크톱용 컨트롤 숨김 */
+  .controls-wrapper {
+    display: none !important;
+  }
+}

@@ -10,6 +10,7 @@ import setsData from '../data/sets.json';
 import { TopBar } from '../components/TopBar';
 import { ScoreView } from '../components/ScoreView';
 import { PlayerControls } from '../components/PlayerControls';
+import { CompactPlayerControls } from '../components/CompactPlayerControls';
 import { ControlTray } from '../components/ControlTray';
 import { SetPlayer } from '../components/SetPlayer';
 
@@ -142,7 +143,7 @@ export default function TuneView(): JSX.Element {
 
   return (
     <div
-      className="flex flex-col h-full overflow-hidden"
+      className="tune-view flex flex-col h-full overflow-hidden"
       style={{ background: 'var(--bg)' }}
     >
       {/* §9 TopBar — 메뉴 숨김 시 숨김 */}
@@ -159,12 +160,22 @@ export default function TuneView(): JSX.Element {
         />
       )}
 
-      {/* §10 ScoreView — flex-1로 남은 공간 최대 점유 (탭으로 메뉴 토글) */}
-      <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} onScoreClick={handleScoreClick} />
+      {/* §10 메인 콘텐츠 영역 */}
+      <div className="tune-content flex flex-1 min-h-0 overflow-hidden">
+        {/* 좌측: ScoreView (모든 해상도) */}
+        <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} onScoreClick={handleScoreClick} />
 
-      {/* 하단 컨트롤 영역 — 메뉴 숨김 시 숨김 */}
+        {/* 우측: CompactPlayerControls (스마트폰 <768px 전용) */}
+        {menuVisible && (
+          <div className="compact-controls hidden lg:flex flex-col border-l border-line">
+            <CompactPlayerControls playback={playback} />
+          </div>
+        )}
+      </div>
+
+      {/* 하단 컨트롤 영역 (데스크톱 ≥768px 전용) */}
       {menuVisible && (
-        <div className="controls-wrapper flex-none flex flex-col">
+        <div className="controls-wrapper hidden lg:flex flex-none flex flex-col">
           {/* 펼침/접힘 토글 버튼 */}
           <button
             onClick={toggleControls}
@@ -215,6 +226,11 @@ export default function TuneView(): JSX.Element {
           </footer>
         </div>
       )}
+
+      {/* 스마트폰용 푸터 */}
+      <footer className="copyright-footer lg:hidden">
+        Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann.
+      </footer>
     </div>
   );
 }
