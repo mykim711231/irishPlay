@@ -140,54 +140,58 @@ export const PlayerControls: React.FC<PlayerControlsProps> = ({
         </button>
       </div>
 
-      {/* §9 빠른속도 칩: 50% / 기본 / 세션×1.15 */}
-      <div className="flex gap-2 justify-center">
-        {BPM_PRESETS.map(p => (
-          <button
-            key={p.label}
-            onClick={() => {
-              const next = Math.round(tuneDefaultBpm * p.factor);
-              setBpm(Math.max(40, Math.min(200, next)));
-            }}
-            className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
-            style={{
-              background: 'var(--bg)',
-              border: '1px solid var(--line)',
-              color: 'var(--ink)',
-            }}
-          >
-            {p.label}
-          </button>
-        ))}
-      </div>
-
-      {/* 연습 모드 선택 */}
-      <div className="practice-mode-buttons flex items-center gap-1.5">
-        <span
-          className="text-xs flex-shrink-0"
-          style={{ color: 'var(--dim)', width: 28 }}
-        >
-          연습
-        </span>
-        {PRACTICE_MODES.map(m => {
-          const active = practiceMode === m;
-          return (
+      {/* §9 빠른속도 칩: 50% / 기본 / 세션×1.15 (세로 모드 <400px에서는 숨김) */}
+      {typeof window !== 'undefined' && window.innerWidth >= 400 && (
+        <div className="flex gap-2 justify-center">
+          {BPM_PRESETS.map(p => (
             <button
-              key={m}
-              onClick={() => onPracticeModeChange(m)}
-              aria-pressed={active}
-              className="flex-1 py-1 rounded-full text-xs font-medium transition-all"
+              key={p.label}
+              onClick={() => {
+                const next = Math.round(tuneDefaultBpm * p.factor);
+                setBpm(Math.max(40, Math.min(200, next)));
+              }}
+              className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
               style={{
-                background: active ? 'var(--teal)' : 'var(--bg)',
-                color:      active ? '#fff' : 'var(--ink)',
-                border:     `1px solid ${active ? 'var(--teal)' : 'var(--line)'}`,
+                background: 'var(--bg)',
+                border: '1px solid var(--line)',
+                color: 'var(--ink)',
               }}
             >
-              {PRACTICE_LABELS[m]}
+              {p.label}
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {/* 연습 모드 선택 (세로 모드 <400px에서는 숨김) */}
+      {typeof window !== 'undefined' && window.innerWidth >= 400 && (
+        <div className="practice-mode-buttons flex items-center gap-1.5">
+          <span
+            className="text-xs flex-shrink-0"
+            style={{ color: 'var(--dim)', width: 28 }}
+          >
+            연습
+          </span>
+          {PRACTICE_MODES.map(m => {
+            const active = practiceMode === m;
+            return (
+              <button
+                key={m}
+                onClick={() => onPracticeModeChange(m)}
+                aria-pressed={active}
+                className="flex-1 py-1 rounded-full text-xs font-medium transition-all"
+                style={{
+                  background: active ? 'var(--teal)' : 'var(--bg)',
+                  color:      active ? '#fff' : 'var(--ink)',
+                  border:     `1px solid ${active ? 'var(--teal)' : 'var(--line)'}`,
+                }}
+              >
+                {PRACTICE_LABELS[m]}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
