@@ -44,23 +44,23 @@ export const CompactPlayerControls: React.FC<CompactPlayerControlsProps> = ({
 
   return (
     <div
-      className="flex flex-col gap-3 px-3 py-4 h-full overflow-y-auto"
-      style={{ background: 'var(--paper)', minWidth: '280px' }}
+      className="flex flex-col gap-2 px-2 py-3 h-full overflow-y-auto"
+      style={{ background: 'var(--paper)', minWidth: '260px' }}
     >
       {/* 재생 컨트롤 버튼 행 */}
-      <div className="flex items-center gap-2 justify-center">
+      <div className="flex items-center gap-1 justify-center">
         {/* ■ 정지 */}
         <button
           onClick={stop}
           aria-label="정지"
           className="flex items-center justify-center rounded-full flex-shrink-0 transition-colors active:scale-95"
           style={{
-            width: 44, height: 44,
-            border: '2px solid var(--line)',
+            width: 40, height: 40,
+            border: '1.5px solid var(--line)',
             color: 'var(--ink)',
           }}
         >
-          <Square size={18} fill="currentColor" />
+          <Square size={16} fill="currentColor" />
         </button>
 
         {/* ▶/⏸ 재생/일시정지 */}
@@ -70,15 +70,15 @@ export const CompactPlayerControls: React.FC<CompactPlayerControlsProps> = ({
           aria-label={isPlaying ? '일시정지' : '재생'}
           className="flex items-center justify-center rounded-full flex-shrink-0 transition-all active:scale-95"
           style={{
-            width: 56, height: 56,
+            width: 50, height: 50,
             background: isLoading ? 'var(--dim)' : 'var(--teal)',
             color: '#fff',
-            boxShadow: '0 2px 8px rgba(31,111,107,.4)',
+            boxShadow: '0 2px 8px rgba(31,111,107,.3)',
           }}
         >
           {isPlaying
-            ? <Pause size={24} fill="white" />
-            : <Play size={24} fill="white" style={{ marginLeft: 2 }} />
+            ? <Pause size={20} fill="white" />
+            : <Play size={20} fill="white" style={{ marginLeft: 2 }} />
           }
         </button>
 
@@ -89,24 +89,24 @@ export const CompactPlayerControls: React.FC<CompactPlayerControlsProps> = ({
           aria-pressed={isLooping}
           className="flex items-center justify-center rounded-full flex-shrink-0 transition-colors active:scale-95"
           style={{
-            width: 44, height: 44,
-            border: isLooping ? '2px solid var(--teal)' : '2px solid var(--line)',
+            width: 40, height: 40,
+            border: isLooping ? '1.5px solid var(--teal)' : '1.5px solid var(--line)',
             color: isLooping ? 'var(--teal)' : 'var(--ink)',
             background: isLooping ? 'rgba(31,111,107,.08)' : 'transparent',
           }}
         >
-          <RotateCcw size={18} />
+          <RotateCcw size={16} />
         </button>
       </div>
 
       {/* BPM 슬라이더 */}
-      <div className="flex flex-col gap-1.5">
-        <div className="flex justify-between items-center">
-          <span className="text-xs font-medium" style={{ color: 'var(--ink)' }}>
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between items-center px-1">
+          <span className="text-xs" style={{ color: 'var(--dim)' }}>
             BPM
           </span>
           <span
-            className="text-sm font-semibold tabular-nums"
+            className="text-xs font-semibold tabular-nums"
             style={{ color: 'var(--teal)' }}
           >
             {bpm}
@@ -134,7 +134,7 @@ export const CompactPlayerControls: React.FC<CompactPlayerControlsProps> = ({
       />
 
       {/* 퍼커션 토글 */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PercussionToggle
           label="🥁 바우런"
           enabled={bodhranEnabled}
