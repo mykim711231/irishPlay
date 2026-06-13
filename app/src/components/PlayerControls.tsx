@@ -43,7 +43,7 @@ export const PlayerControls: React.FC<PlayerControlsProps> = ({
 
   return (
     <div
-      className="flex flex-col gap-2 px-4 py-3 flex-shrink-0"
+      className="player-controls flex flex-col gap-2 px-4 py-3 flex-shrink-0"
       style={{ background: 'var(--paper)', borderTop: '1px solid var(--line)' }}
     >
       {/* 상단: 버튼 행 + BPM 슬라이더 */}
@@ -162,7 +162,7 @@ export const PlayerControls: React.FC<PlayerControlsProps> = ({
       </div>
 
       {/* 연습 모드 선택 */}
-      <div className="flex items-center gap-1.5">
+      <div className="practice-mode-buttons flex items-center gap-1.5">
         <span
           className="text-xs flex-shrink-0"
           style={{ color: 'var(--dim)', width: 28 }}

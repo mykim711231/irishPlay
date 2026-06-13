@@ -108,6 +108,87 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   }
 }
 
+/* 모바일 스마트폰 최적화 (375~480px, 일반 스마트폰) */
+@media (max-width: 480px) {
+  /* SetPlayer: 패딩 축소, 갭 축소 */
+  .set-player {
+    padding: 6px 12px !important;
+    gap: 4px !important;
+  }
+
+  .set-player > p {
+    margin-bottom: 6px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .set-player > div {
+    gap: 6px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .set-player > div button {
+    padding: 8px 10px !important;
+    font-size: 0.7rem !important;
+  }
+
+  /* PlayerControls: 패딩 축소, 갭 축소 */
+  .player-controls {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+  }
+
+  .player-controls > div:nth-child(1) {
+    gap: 6px !important;
+  }
+
+  /* 재생/정지 버튼: 약간 축소 */
+  .player-controls button:nth-child(2) {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  /* 다른 제어 버튼: 축소 */
+  .player-controls button:nth-child(1),
+  .player-controls button:nth-child(3),
+  .player-controls button:nth-child(5) {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* BPM 슬라이더: 모바일에서 높이 증대 (터치 쉽게) */
+  .player-controls input[type="range"] {
+    height: 8px !important;
+  }
+
+  /* 빠른속도 칩: 패딩 증대 */
+  .player-controls > div:nth-child(2) > button {
+    padding: 8px 12px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* 연습 모드 컨테이너: 높이 증대 */
+  .practice-mode-buttons {
+    gap: 6px !important;
+  }
+
+  .practice-mode-buttons > button {
+    padding: 8px 10px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* 토글 버튼: 모바일에서 더 크게 (터치하기 쉽게) */
+  .controls-toggle {
+    padding: 10px 12px !important;
+    font-size: 0.8rem !important;
+    min-height: 44px !important;
+  }
+
+  /* ControlTray: 모바일 컴팩트 */
+  .controls-wrapper {
+    max-height: 50vh !important;
+  }
+}
+
 /* 매우 작은 화면 (390px 이하, 일반 스마트폰 세로) */
 @media (max-width: 390px) {
   .score-section {

@@ -40,7 +40,7 @@ export const SetPlayer: React.FC<SetPlayerProps> = ({
 
   return (
     <div
-      className="px-4 py-2 flex-shrink-0"
+      className="set-player px-4 py-2 flex-shrink-0"
       style={{ borderTop: '1px solid var(--line)', background: 'var(--bg)' }}
     >
       <p className="text-xs font-medium mb-1.5" style={{ color: 'var(--dim)' }}>
