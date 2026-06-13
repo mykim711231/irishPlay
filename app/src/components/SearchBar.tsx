@@ -82,7 +82,70 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         gap: '6px',
       }}
     >
-      {/* 검색 입력 */}
+      {/* Book + 리듬 필터 + 결과 수 (상단) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Book 필터 */}
+        <select
+          value={selectedBook}
+          onChange={handleBook}
+          style={{
+            flex: '0 0 auto',
+            border: `1.5px solid ${selectedBook ? 'var(--teal)' : 'var(--line)'}`,
+            borderRadius: '8px',
+            padding: '4px 8px',
+            fontSize: '0.8rem',
+            color: selectedBook ? 'var(--teal)' : 'var(--dim)',
+            background: 'var(--bg)',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="0">모든 Book</option>
+          <option value="1">Book 1</option>
+          <option value="2">Book 2</option>
+          <option value="3">Book 3</option>
+        </select>
+
+        {/* 리듬 필터 */}
+        <select
+          value={selectedRhythm}
+          onChange={handleRhythm}
+          style={{
+            flex: '0 0 auto',
+            border: `1.5px solid ${selectedRhythm ? 'var(--teal)' : 'var(--line)'}`,
+            borderRadius: '8px',
+            padding: '4px 8px',
+            fontSize: '0.8rem',
+            color: selectedRhythm ? 'var(--teal)' : 'var(--dim)',
+            background: 'var(--bg)',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="">모든 리듬</option>
+          {RHYTHMS.map(r => (
+            <option key={r} value={r} style={{ textTransform: 'capitalize' }}>
+              {r.charAt(0).toUpperCase() + r.slice(1)}
+            </option>
+          ))}
+        </select>
+
+        <span
+          style={{
+            fontSize: '0.78rem',
+            color: isFiltered ? 'var(--teal)' : 'var(--dim)',
+            marginLeft: 'auto',
+          }}
+        >
+          {isFiltered
+            ? resultCount === 0
+              ? '검색 결과 없음'
+              : `총 ${totalCount}곡 중 ${resultCount}곡`
+            : `전체 ${totalCount}곡`}
+        </span>
+      </div>
+
+      {/* 검색 입력 (하단) */}
       <div
         style={{
           display: 'flex',
@@ -130,68 +193,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             <X size={14} style={{ color: 'var(--dim)' }} />
           </button>
         )}
-      </div>
-
-      {/* 리듬 필터 + 결과 수 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <select
-          value={selectedRhythm}
-          onChange={handleRhythm}
-          style={{
-            flex: '0 0 auto',
-            border: `1.5px solid ${selectedRhythm ? 'var(--teal)' : 'var(--line)'}`,
-            borderRadius: '8px',
-            padding: '4px 8px',
-            fontSize: '0.8rem',
-            color: selectedRhythm ? 'var(--teal)' : 'var(--dim)',
-            background: 'var(--bg)',
-            cursor: 'pointer',
-            outline: 'none',
-          }}
-        >
-          <option value="">모든 리듬</option>
-          {RHYTHMS.map(r => (
-            <option key={r} value={r} style={{ textTransform: 'capitalize' }}>
-              {r.charAt(0).toUpperCase() + r.slice(1)}
-            </option>
-          ))}
-        </select>
-
-        {/* Book 필터 */}
-        <select
-          value={selectedBook}
-          onChange={handleBook}
-          style={{
-            flex: '0 0 auto',
-            border: `1.5px solid ${selectedBook ? 'var(--teal)' : 'var(--line)'}`,
-            borderRadius: '8px',
-            padding: '4px 8px',
-            fontSize: '0.8rem',
-            color: selectedBook ? 'var(--teal)' : 'var(--dim)',
-            background: 'var(--bg)',
-            cursor: 'pointer',
-            outline: 'none',
-          }}
-        >
-          <option value="0">모든 Book</option>
-          <option value="1">Book 1</option>
-          <option value="2">Book 2</option>
-          <option value="3">Book 3</option>
-        </select>
-
-        <span
-          style={{
-            fontSize: '0.78rem',
-            color: isFiltered ? 'var(--teal)' : 'var(--dim)',
-            marginLeft: 'auto',
-          }}
-        >
-          {isFiltered
-            ? resultCount === 0
-              ? '검색 결과 없음'
-              : `총 ${totalCount}곡 중 ${resultCount}곡`
-            : `전체 ${totalCount}곡`}
-        </span>
       </div>
     </div>
   );
