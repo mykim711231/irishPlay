@@ -25,8 +25,8 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
     if (!tune.abc) return;
     let staffwidth: number;
     if (containerWidth < 400) {
-      // 스마트폰 세로 (<400px): 6~8마디 (컨트롤 패널과 악보 균형)
-      staffwidth = Math.max(280, containerWidth - 20);
+      // 스마트폰 세로 (<400px): 9~12마디 (악보 모두 보기, 최소 스크롤)
+      staffwidth = Math.max(360, containerWidth - 15);
     } else if (containerWidth < 500) {
       // 스마트폰 가로 (400-499px): 8~10마디
       staffwidth = Math.max(350, containerWidth - 20);
