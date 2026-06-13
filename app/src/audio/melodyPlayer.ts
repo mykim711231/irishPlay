@@ -19,12 +19,41 @@ interface LoadOptions {
   onFinished: () => void;
 }
 
-/** meter 문자열("4/4", "6/8" 등)에서 한 마디의 밀리초 계산 */
+/**
+ * abcjs getBeatLength()의 비트 배수 규칙을 그대로 복제한다.
+ * (node_modules/abcjs/src/data/abc_tune.js getBeatLength)
+ * 복합박자(6/8·9/8·12/8·3/8)는 점4분음표(3/8)를 1비트로 센다.
+ */
+function abcBeatMultiplier(num: number, den: number): number {
+  if (num === 6 || num === 9 || num === 12) return 3;
+  if (num === 3 && den === 8) return 3;
+  if (den === 8 && (num === 5 || num === 7)) return 2;
+  return 1;
+}
+
+/**
+ * abcjs TimingCallbacks(커서)가 쓰는 비트 모델에 맞춘 qpm을 계산한다.
+ * 커서 마디 길이 = (num/mult)*(60000/qpm), synth 마디 길이 = (num/den)*4*(60000/bpm).
+ * 두 길이를 일치시키려면 qpm = bpm * den / (4*mult).
+ * 단순박자(den=4)는 mult=1 → qpm = bpm (변화 없음).
+ * 복합박자(den=8, num∈{3,6,9,12})는 qpm = bpm*2/3 → 커서가 1.5배 빨라지던 버그 해소.
+ */
+function calcCursorQpm(meter: string, bpm: number): number {
+  const [num, den] = meter.split('/').map(Number);
+  const mult = abcBeatMultiplier(num, den);
+  return Math.round((bpm * den) / (4 * mult));
+}
+
+/** meter 문자열("4/4", "6/8" 등)에서 한 마디의 밀리초 계산.
+ *  커서(TimingCallbacks)와 정확히 동기화되도록, 보정된 정수 qpm으로부터 역산한다. */
 function calcMsPerMeasure(meter: string, bpm: number): number {
   const [num, den] = meter.split('/').map(Number);
-  // 온음표(1/1) 길이 = 4 * (60000 / bpm) ms
-  // 한 마디 = (num/den) 온음표
-  return (num / den) * 4 * (60000 / bpm);
+  const mult = abcBeatMultiplier(num, den);
+  // 커서는 qpm을 parseInt로 절삭하므로(abcjs), 같은 정수 qpm에서 마디 길이를 역산해
+  // synth·커서·퍼커션 세 엔진이 동일한 마디 길이를 갖게 한다.
+  const qpm = calcCursorQpm(meter, bpm);
+  // 마디당 비트 수 = barLength / beatLength = (num/den)/(mult/den) = num/mult
+  return (num / mult) * (60000 / qpm);
 }
 
 class MelodyPlayer {
@@ -95,7 +124,9 @@ class MelodyPlayer {
     this.timingCallbacks = new (abcjs as any).TimingCallbacks(
       screenVisualObj,
       {
-        qpm: bpm,
+        // 복합박자에서 커서가 synth보다 1.5배 빨라지던 문제 보정
+        // (abcjs getBeatLength는 6/8·9/8·12/8을 점4분음표 비트로 계산)
+        qpm: calcCursorQpm(meter, bpm),
         beatSubdivisions: 2,
         eventCallback: (ev: any) => {
           if (ev === null) {
