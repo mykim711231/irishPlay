@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Repeat, Gauge, Hand, Star, Ear } from 'lucide-react';
+import { ChevronLeft, Repeat, Gauge, Hand, Star, Ear, Play } from 'lucide-react';
+import { playNote } from '../audio/soundTest';
 
 type TabId = 'ornament' | 'whistle' | 'bodhran' | 'tune' | 'practice';
 
@@ -31,16 +32,16 @@ const ORNAMENTS = [
     desc: '한 박 안에 세 음을 균등하게 빠르게 연주해 짧은 질주감을 만듭니다.' },
 ];
 
-// 틴 휘슬(D) 운지: 위→아래 6구멍, ●막음 ○열림 ◐반구멍
+// 틴 휘슬(D) 운지: 위→아래 6구멍, ●막음 ○열림 ◐반구멍 / tone = Tone.js 음정
 const WHISTLE = [
-  { note: 'D',  holes: '●●●●●●', tip: '전부 막음 (최저음)' },
-  { note: 'E',  holes: '●●●●●○', tip: '' },
-  { note: 'F♯', holes: '●●●●○○', tip: '' },
-  { note: 'G',  holes: '●●●○○○', tip: '' },
-  { note: 'A',  holes: '●●○○○○', tip: '' },
-  { note: 'B',  holes: '●○○○○○', tip: '' },
-  { note: 'C♯', holes: '○○○○○○', tip: '전부 열기' },
-  { note: "D'", holes: '●●●●●●', tip: '+ 강한 호흡 (2옥타브)' },
+  { note: 'D',  holes: '●●●●●●', tone: 'D5',  tip: '전부 막음 (최저음)' },
+  { note: 'E',  holes: '●●●●●○', tone: 'E5',  tip: '' },
+  { note: 'F♯', holes: '●●●●○○', tone: 'F#5', tip: '' },
+  { note: 'G',  holes: '●●●○○○', tone: 'G5',  tip: '' },
+  { note: 'A',  holes: '●●○○○○', tone: 'A5',  tip: '' },
+  { note: 'B',  holes: '●○○○○○', tone: 'B5',  tip: '' },
+  { note: 'C♯', holes: '○○○○○○', tone: 'C#6', tip: '전부 열기' },
+  { note: "D'", holes: '●●●●●●', tone: 'D6',  tip: '+ 강한 호흡 (2옥타브)' },
 ];
 
 const BODHRAN = [
@@ -223,13 +224,21 @@ export const GuideView: React.FC = () => {
             </p>
             {WHISTLE.map(w => (
               <div key={w.note} className="rounded-xl px-3 py-2.5 flex items-center gap-3" style={card}>
+                <button
+                  onClick={() => void playNote(w.tone)}
+                  aria-label={`${w.note} 음 듣기`}
+                  className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-transform active:scale-90"
+                  style={{ background: 'var(--teal)', color: '#fff' }}
+                >
+                  <Play size={14} fill="white" style={{ marginLeft: 1 }} />
+                </button>
                 <span
                   className="font-semibold flex-shrink-0 text-center"
-                  style={{ color: 'var(--teal)', fontSize: '1.05rem', width: 32 }}
+                  style={{ color: 'var(--teal)', fontSize: '1.05rem', width: 28 }}
                 >
                   {w.note}
                 </span>
-                <span className="font-mono tracking-widest" style={{ color: 'var(--ink)', fontSize: '1.1rem' }}>
+                <span className="font-mono tracking-widest" style={{ color: 'var(--ink)', fontSize: '1.05rem' }}>
                   {w.holes}
                 </span>
                 {w.tip && (

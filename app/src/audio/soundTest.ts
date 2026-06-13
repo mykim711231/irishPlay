@@ -113,6 +113,23 @@ export async function testInstrument(instrumentId: string): Promise<void> {
 }
 
 /**
+ * 가이드 "들어보기": 지정한 음정을 단음으로 재생한다 (예: 휘슬 운지표).
+ * note: Tone.js 음표명 (예: 'D5', 'F#5', 'C#6')
+ */
+export async function playNote(note: string, program = 72): Promise<void> {
+  if (testInProgress) return;
+  testInProgress = true;
+
+  try {
+    await toneStart();
+    const synth = ensureTestSynth(program);
+    synth.triggerAttackRelease(note, '4n', toneNow());
+  } finally {
+    setTimeout(() => { testInProgress = false; }, 600);
+  }
+}
+
+/**
  * 바우런 토글 시 피드백음 재생 (MembraneSynth 베이스 타격).
  * - enabled = true  → 타격음 (C2, 8분음표)
  * - enabled = false → 무음
