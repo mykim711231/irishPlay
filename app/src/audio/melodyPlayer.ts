@@ -1,7 +1,7 @@
 // sf3-generated | melodyPlayer: abcjs synth 기반 멜로디 재생 모듈
 
 import abcjs from 'abcjs';
-import { shiftAbcOctave } from './abcTransform';
+import { shiftAbcOctave, expandRolls } from './abcTransform';
 import { getInstrument } from '../data/instruments';
 
 // [web-review-recommended] abcjs.synth.CreateSynth / TimingCallbacks API:
@@ -64,11 +64,12 @@ class MelodyPlayer {
     const { abc, instrumentId, bpm, meter, onEvent, onFinished } = opts;
     const instrument = getInstrument(instrumentId);
 
-    // 재생용 ABC — 필요시 옥타브 변환
-    const playAbc =
+    // 재생용 ABC — 옥타브 변환 후 롤(~) 펼침 (악보는 원본 유지, 재생만 장식음 표현)
+    const shifted =
       instrument.octave !== 0
         ? shiftAbcOctave(abc, instrument.octave)
         : abc;
+    const playAbc = expandRolls(shifted);
 
     // abcjs가 DOM을 건드리지 않는 '*' 렌더로 재생용 visualObj 생성
     const playVisualObj = abcjs.renderAbc('*', playAbc, {})[0];
