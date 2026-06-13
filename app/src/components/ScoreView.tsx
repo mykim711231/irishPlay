@@ -19,19 +19,22 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const paperId = `abc-paper-${uid.replace(/:/g, '')}`;
   const sectionRef = useRef<HTMLElement>(null);
 
-  // staffwidth를 반응형으로 설정 → 모바일/태블릿/데스크톱 모두 최적화
-  // 모바일 세로: 4~5마디 / 모바일 가로: 중간 크기 / 데스크톱: 850px (좌우 스크롤)
+  // staffwidth를 반응형으로 설정 → PC/태블릿/스마트폰 최적화
+  // PC(≥768px): 850px | 태블릿(500-767px): 600px | 스마트폰 가로(≥400px): 350px | 스마트폰 세로(<400px): 280px
   const renderScore = useCallback((containerWidth: number) => {
     if (!tune.abc) return;
     let staffwidth: number;
     if (containerWidth < 400) {
-      // 모바일 세로 (≤399px): 4~5마디 (컨트롤 패널과 악보 균형)
-      staffwidth = Math.max(200, containerWidth - 30);
+      // 스마트폰 세로 (<400px): 6~8마디 (컨트롤 패널과 악보 균형)
+      staffwidth = Math.max(280, containerWidth - 20);
     } else if (containerWidth < 500) {
-      // 모바일 가로 (400-499px): 중간 크기
+      // 스마트폰 가로 (400-499px): 8~10마디
       staffwidth = Math.max(350, containerWidth - 20);
+    } else if (containerWidth < 768) {
+      // 태블릿 (500-767px): 10~12마디
+      staffwidth = 600;
     } else {
-      // 태블릿/데스크톱 (≥500px): 고정값 (스크롤 가능)
+      // PC/데스크톱 (≥768px): 고정값 850px (좌우 스크롤)
       staffwidth = 850;
     }
     const visualObjs = abcjs.renderAbc(paperId, tune.abc, {
