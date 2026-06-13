@@ -17,11 +17,13 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const paperId = `abc-paper-${uid.replace(/:/g, '')}`;
   const sectionRef = useRef<HTMLElement>(null);
 
-  // staffwidth를 컨테이너 너비 기반으로 계산하여 renderAbc 호출
-  const renderScore = useCallback((containerWidth: number) => {
+  // staffwidth를 고정값으로 설정 → 넓은 악보는 좌우 스크롤 가능
+  // 연주 진행 표시(커서)가 스크롤되며 따라감
+  const renderScore = useCallback((_containerWidth: number) => {
     if (!tune.abc) return;
-    // 좌우 padding(px-3 = 12px × 2) + abc-paper padding(p-3 = 12px × 2) 차감
-    const staffwidth = Math.max(300, containerWidth - 48);
+    // 데스크톱 기준 악보 너비 (800px ~ 900px 범위)
+    // 모바일에서는 스크롤로 전체 악보 볼 수 있음
+    const staffwidth = 850;
     const visualObjs = abcjs.renderAbc(paperId, tune.abc, {
       add_classes: true,
       staffwidth,
