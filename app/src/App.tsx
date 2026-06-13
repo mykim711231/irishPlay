@@ -3,6 +3,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { TuneList } from './components/TuneList';
+import { GuideView } from './components/GuideView';
 
 // 동적 import → abcjs(503 kB)·tone(247 kB)이 /tune/:id 첫 방문 시에만 로드됨
 const TuneView = lazy(() => import('./routes/TuneView'));
@@ -26,6 +27,9 @@ export default function App(): JSX.Element {
     <Routes>
       {/* §13 / → TuneList (eager: 초기 번들에 포함) */}
       <Route path="/" element={<TuneList />} />
+
+      {/* 장식음·연습 가이드 (eager: 가벼운 텍스트) */}
+      <Route path="/guide" element={<GuideView />} />
 
       {/* §13 /tune/:id → 곡 플레이어 (lazy: 첫 방문 시 로드) */}
       <Route

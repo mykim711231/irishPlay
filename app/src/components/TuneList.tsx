@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, ChevronRight, Star } from 'lucide-react';
+import { Music, ChevronRight, Star, BookOpen } from 'lucide-react';
 import tunesData from '../data/tunes.json';
 import setsData from '../data/sets.json';
 import { SearchBar } from './SearchBar';
@@ -114,6 +114,16 @@ export const TuneList: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* 장식음·연습 가이드 */}
+        <button
+          onClick={() => navigate('/guide')}
+          aria-label="장식음·연습 가이드"
+          className="flex items-center justify-center w-9 h-9 rounded-full flex-shrink-0 transition-all"
+          style={{ background: 'var(--bg)', border: '1.5px solid var(--line)', color: 'var(--teal)' }}
+        >
+          <BookOpen size={16} />
+        </button>
 
         {/* 즐겨찾기만 보기 토글 */}
         <button
