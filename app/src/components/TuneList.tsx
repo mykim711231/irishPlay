@@ -17,6 +17,7 @@ interface TuneItem {
   meter: string;
   key: string;
   setId: string;
+  setOrder?: number;
 }
 
 interface SetItem {
@@ -62,6 +63,26 @@ export const TuneList: React.FC = () => {
     });
   }, [allTunes, searchQuery, selectedRhythm, favOnly, isFavorite]);
 
+  const groupedByBook = useMemo(() => {
+    const groups: Record<number, TuneItem[]> = { 1: [], 2: [], 3: [] };
+    filteredTunes.forEach(t => {
+      if (t.book >= 1 && t.book <= 3) groups[t.book].push(t);
+    });
+    // setId "b1-s03" → 세트 번호 3, setOrder로 세트 내 순서 정렬
+    const setNum = (setId: string) => {
+      const m = setId.match(/-s(\d+)$/);
+      return m ? parseInt(m[1], 10) : 0;
+    };
+    ([1, 2, 3] as const).forEach(book => {
+      groups[book].sort((a, b) => {
+        const sd = setNum(a.setId) - setNum(b.setId);
+        if (sd !== 0) return sd;
+        return (a.setOrder ?? 0) - (b.setOrder ?? 0);
+      });
+    });
+    return groups;
+  }, [filteredTunes]);
+
   return (
     <div
       className="flex flex-col h-full"
@@ -86,7 +107,7 @@ export const TuneList: React.FC = () => {
               Foinn Seisiún
             </h1>
             <p className="text-xs" style={{ color: 'var(--dim)' }}>
-              {allTunes.length}곡 · Book 1
+              {allTunes.length}곡 · Book 1–3
             </p>
           </div>
         </div>
@@ -138,71 +159,105 @@ export const TuneList: React.FC = () => {
             )}
           </div>
         ) : (
-          <ul className="flex flex-col gap-1">
-            {filteredTunes.map(tune => {
-              const setInfo    = setMap[tune.setId];
-              const rhythmColor = RHYTHM_COLOR[tune.rhythm] ?? 'var(--teal)';
-              const starred    = isFavorite(tune.id);
-
+          <div className="flex flex-col gap-4">
+            {([1, 2, 3] as const).map(book => {
+              const tunes = groupedByBook[book];
+              if (tunes.length === 0) return null;
               return (
-                <li key={`${tune.id}-${tune.setId}`}>
-                  <button
-                    onClick={() => navigate(`/tune/${tune.id}`)}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
-                    style={{ background: 'var(--paper)' }}
+                <section key={`book-${book}`}>
+                  {/* Book 헤더 — sticky */}
+                  <div
+                    className="sticky top-0 z-10 flex items-center gap-2 px-1 py-1.5"
+                    style={{
+                      background: 'var(--bg)',
+                      borderBottom: '1.5px solid var(--line)',
+                      marginBottom: '4px',
+                    }}
                   >
-                    {/* 아이콘 */}
-                    <div
-                      className="flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
-                      style={{ background: `${rhythmColor}18` }}
-                    >
-                      <Music size={18} style={{ color: rhythmColor }} />
-                    </div>
-
-                    {/* 곡 정보 */}
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="font-medium truncate leading-tight"
-                        style={{ color: 'var(--ink)', fontSize: '0.9rem' }}
-                      >
-                        {tune.title}
-                      </p>
-                      <p className="text-xs truncate" style={{ color: 'var(--dim)' }}>
-                        <span className="font-semibold" style={{ color: rhythmColor }}>
-                          {tune.rhythm}
-                        </span>
-                        {' · '}
-                        {tune.key}
-                        {' · '}
-                        p.{tune.page}
-                        {setInfo && ` · ${setInfo.name}`}
-                      </p>
-                    </div>
-
-                    {/* ★ 즐겨찾기 버튼 */}
-                    <button
-                      onClick={e => toggleFavorite(tune.id, e)}
-                      aria-label={starred ? '즐겨찾기 제거' : '즐겨찾기 추가'}
-                      aria-pressed={starred}
-                      className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-all active:scale-90"
+                    <span
+                      className="text-xs font-bold px-2 py-0.5 rounded-full"
                       style={{
-                        background: starred ? '#fef3c7' : 'transparent',
-                        border: 'none',
+                        background: 'var(--teal, #1f6f6b)',
+                        color: '#fff',
+                        letterSpacing: '0.04em',
                       }}
                     >
-                      <Star
-                        size={16}
-                        fill={starred ? '#f59e0b' : 'none'}
-                        stroke={starred ? '#f59e0b' : 'var(--line)'}
-                      />
-                    </button>
+                      Book {book}
+                    </span>
+                    <span className="text-xs" style={{ color: 'var(--dim)' }}>
+                      {tunes.length}곡
+                    </span>
+                  </div>
 
-                    <ChevronRight size={16} style={{ color: 'var(--line)', flexShrink: 0 }} />
-                  </button>
-                </li>
+                  <ul className="flex flex-col gap-1">
+                    {tunes.map(tune => {
+                      const setInfo     = setMap[tune.setId];
+                      const rhythmColor = RHYTHM_COLOR[tune.rhythm] ?? 'var(--teal)';
+                      const starred     = isFavorite(tune.id);
+
+                      return (
+                        <li key={`${tune.id}-${tune.setId}`}>
+                          <button
+                            onClick={() => navigate(`/tune/${tune.id}`)}
+                            className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
+                            style={{ background: 'var(--paper)' }}
+                          >
+                            {/* 아이콘 */}
+                            <div
+                              className="flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
+                              style={{ background: `${rhythmColor}18` }}
+                            >
+                              <Music size={18} style={{ color: rhythmColor }} />
+                            </div>
+
+                            {/* 곡 정보 */}
+                            <div className="flex-1 min-w-0">
+                              <p
+                                className="font-medium truncate leading-tight"
+                                style={{ color: 'var(--ink)', fontSize: '0.9rem' }}
+                              >
+                                {tune.title}
+                              </p>
+                              <p className="text-xs truncate" style={{ color: 'var(--dim)' }}>
+                                <span className="font-semibold" style={{ color: rhythmColor }}>
+                                  {tune.rhythm}
+                                </span>
+                                {' · '}
+                                {tune.key}
+                                {' · '}
+                                p.{tune.page}
+                                {setInfo && ` · ${setInfo.name}`}
+                              </p>
+                            </div>
+
+                            {/* ★ 즐겨찾기 버튼 */}
+                            <button
+                              onClick={e => toggleFavorite(tune.id, e)}
+                              aria-label={starred ? '즐겨찾기 제거' : '즐겨찾기 추가'}
+                              aria-pressed={starred}
+                              className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-all active:scale-90"
+                              style={{
+                                background: starred ? '#fef3c7' : 'transparent',
+                                border: 'none',
+                              }}
+                            >
+                              <Star
+                                size={16}
+                                fill={starred ? '#f59e0b' : 'none'}
+                                stroke={starred ? '#f59e0b' : 'var(--line)'}
+                              />
+                            </button>
+
+                            <ChevronRight size={16} style={{ color: 'var(--line)', flexShrink: 0 }} />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
               );
             })}
-          </ul>
+          </div>
         )}
       </main>
 
