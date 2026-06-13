@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, ChevronRight, Star, BookOpen } from 'lucide-react';
+import { Music, ChevronRight, Star, BookOpen, QrCode, X } from 'lucide-react';
 import tunesData from '../data/tunes.json';
 import setsData from '../data/sets.json';
 import { SearchBar } from './SearchBar';
@@ -41,6 +41,7 @@ export const TuneList: React.FC = () => {
   const [selectedRhythm, setSelectedRhythm] = useState('');
   const [selectedBook, setSelectedBook]   = useState(0);
   const [favOnly, setFavOnly]             = useState(false);
+  const [showQr, setShowQr]               = useState(false);
 
   const { isFavorite, toggleFavorite, count: favCount } = useFavorites();
 
@@ -114,6 +115,16 @@ export const TuneList: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* QR 공유 */}
+        <button
+          onClick={() => setShowQr(true)}
+          aria-label="QR 코드로 공유"
+          className="flex items-center justify-center w-9 h-9 rounded-full flex-shrink-0 transition-all"
+          style={{ background: 'var(--bg)', border: '1.5px solid var(--line)', color: 'var(--teal)' }}
+        >
+          <QrCode size={16} />
+        </button>
 
         {/* 장식음·연습 가이드 */}
         <button
@@ -287,6 +298,47 @@ export const TuneList: React.FC = () => {
       <footer className="copyright-footer">
         Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann.
       </footer>
+
+      {/* QR 공유 모달 */}
+      {showQr && (
+        <div
+          onClick={() => setShowQr(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ background: 'rgba(0,0,0,.55)' }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="rounded-2xl p-5 flex flex-col items-center gap-3 max-w-xs w-full"
+            style={{ background: 'var(--paper)' }}
+          >
+            <div className="flex items-center justify-between w-full">
+              <span className="font-semibold" style={{ color: 'var(--ink)', fontSize: '1rem' }}>
+                앱 공유
+              </span>
+              <button
+                onClick={() => setShowQr(false)}
+                aria-label="닫기"
+                className="flex items-center justify-center w-8 h-8 rounded-full"
+                style={{ color: 'var(--dim)' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <img
+              src={`${import.meta.env.BASE_URL}qr.png`}
+              alt="앱 주소 QR 코드"
+              width={220}
+              height={220}
+              className="rounded-lg"
+              style={{ background: '#fff', padding: 8 }}
+            />
+            <p className="text-xs text-center" style={{ color: 'var(--dim)' }}>
+              휴대폰 카메라로 스캔하면 앱이 열립니다.<br />
+              「홈 화면에 추가」하면 앱처럼 사용할 수 있어요.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
