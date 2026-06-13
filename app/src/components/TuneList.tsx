@@ -1,10 +1,11 @@
 // sf3-generated | TuneList: 곡 목록 화면
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, ChevronRight } from 'lucide-react';
 import tunesData from '../data/tunes.json';
 import setsData from '../data/sets.json';
+import { SearchBar } from './SearchBar';
 
 interface TuneItem {
   id: string;
@@ -34,6 +35,11 @@ const RHYTHM_COLOR: Record<string, string> = {
 
 export const TuneList: React.FC = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRhythm, setSelectedRhythm] = useState('');
+
+  const handleSearch = useCallback((q: string) => setSearchQuery(q), []);
+  const handleRhythm = useCallback((r: string) => setSelectedRhythm(r), []);
 
   const setMap = useMemo(() => {
     const m: Record<string, SetItem> = {};
@@ -41,7 +47,15 @@ export const TuneList: React.FC = () => {
     return m;
   }, []);
 
-  const tunes = tunesData as TuneItem[];
+  const allTunes = tunesData as TuneItem[];
+
+  const filteredTunes = useMemo(() => {
+    return allTunes.filter(t => {
+      const titleMatch = t.title.toLowerCase().includes(searchQuery);
+      const rhythmMatch = !selectedRhythm || t.rhythm === selectedRhythm;
+      return titleMatch && rhythmMatch;
+    });
+  }, [allTunes, searchQuery, selectedRhythm]);
 
   return (
     <div
@@ -67,21 +81,38 @@ export const TuneList: React.FC = () => {
               Foinn Seisiún
             </h1>
             <p className="text-xs" style={{ color: 'var(--dim)' }}>
-              {tunes.length}곡 · Book 1
+              {allTunes.length}곡 · Book 1
             </p>
           </div>
         </div>
       </header>
 
+      {/* 검색 바 */}
+      <SearchBar
+        onSearch={handleSearch}
+        onRhythmChange={handleRhythm}
+        resultCount={filteredTunes.length}
+        totalCount={allTunes.length}
+      />
+
       {/* 곡 목록 */}
       <main className="flex-1 overflow-y-auto px-3 py-2">
+        {filteredTunes.length === 0 ? (
+          <div
+            className="flex flex-col items-center justify-center py-16 gap-2"
+            style={{ color: 'var(--dim)' }}
+          >
+            <Music size={36} style={{ opacity: 0.3 }} />
+            <p style={{ fontSize: '0.9rem' }}>검색 결과 없음</p>
+          </div>
+        ) : (
         <ul className="flex flex-col gap-1">
-          {tunes.map(tune => {
+          {filteredTunes.map(tune => {
             const setInfo = setMap[tune.setId];
             const rhythmColor = RHYTHM_COLOR[tune.rhythm] ?? 'var(--teal)';
 
             return (
-              <li key={tune.id}>
+              <li key={`${tune.id}-${tune.setId}`}>
                 <button
                   onClick={() => navigate(`/tune/${tune.id}`)}
                   className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors hover:bg-white active:scale-[0.99]"
@@ -121,6 +152,7 @@ export const TuneList: React.FC = () => {
             );
           })}
         </ul>
+        )}
       </main>
 
       {/* 저작권 푸터 §11 */}
