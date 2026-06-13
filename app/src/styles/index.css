@@ -203,19 +203,6 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   display: none;
 }
 
-/* 모바일/태블릿(<1024px): SVG 자연 크기로 표시 (음표 최소크기 보장)
-   staffwidth가 컨테이너보다 크면 score-section이 좌우 스크롤 */
-@media (max-width: 1023px) {
-  .abc-paper svg {
-    width: auto !important;
-    max-width: none !important;
-  }
-  .abc-paper {
-    width: max-content;
-    max-width: none;
-  }
-}
-
 @media (max-width: 1023px) {
   /* 모바일·태블릿: PC 하단 컨트롤 숨김, mobile-controls 표시 */
   .controls-wrapper {
