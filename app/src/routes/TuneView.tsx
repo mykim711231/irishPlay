@@ -58,6 +58,28 @@ export default function TuneView(): JSX.Element {
     }
   });
 
+  // 컨트롤 펼침/접힘 상태 (localStorage에 저장)
+  const [controlsExpanded, setControlsExpanded] = useState(() => {
+    try {
+      const saved = localStorage.getItem('irishPlay_controlsExpanded');
+      return saved === null ? true : saved === 'true';
+    } catch {
+      return true;
+    }
+  });
+
+  const toggleControls = useCallback(() => {
+    setControlsExpanded(v => {
+      const newVal = !v;
+      try {
+        localStorage.setItem('irishPlay_controlsExpanded', String(newVal));
+      } catch (e) {
+        console.error('Failed to save controls state:', e);
+      }
+      return newVal;
+    });
+  }, []);
+
   const hideMenuTimer = useRef<NodeJS.Timeout>();
 
   const handleScoreClick = useCallback(() => {
@@ -142,34 +164,56 @@ export default function TuneView(): JSX.Element {
 
       {/* 하단 컨트롤 영역 — 메뉴 숨김 시 숨김 */}
       {menuVisible && (
-        <div className="controls-wrapper flex-none">
-        {/* 세트 내 곡 이동 */}
-        <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
+        <div className="controls-wrapper flex-none flex flex-col">
+          {/* 펼침/접힘 토글 버튼 */}
+          <button
+            onClick={toggleControls}
+            className="px-4 py-2 flex items-center justify-center text-sm font-medium transition-colors"
+            style={{
+              background: 'var(--paper)',
+              borderTop: '1px solid var(--line)',
+              borderBottom: controlsExpanded ? '1px solid var(--line)' : 'none',
+              color: 'var(--dim)',
+              cursor: 'pointer',
+            }}
+            aria-expanded={controlsExpanded}
+            aria-label={controlsExpanded ? '컨트롤 접기' : '컨트롤 펼치기'}
+          >
+            {controlsExpanded ? '▼' : '▲'} 컨트롤
+          </button>
 
-        {/* §9 PlayerControls */}
-        <PlayerControls
-          playback={playback}
-          practiceMode={practiceMode}
-          onPracticeModeChange={setPracticeMode}
-        />
+          {/* 펼침 시에만 표시 */}
+          {controlsExpanded && (
+            <>
+              {/* 세트 내 곡 이동 */}
+              <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
 
-        {/* §9 ControlTray */}
-        <ControlTray
-          open={playback.trayOpen}
-          instrumentId={playback.instrumentId}
-          onInstrumentChange={playback.setInstrumentId}
-          bodhranEnabled={playback.bodhranEnabled}
-          spoonEnabled={playback.spoonEnabled}
-          onBodhranToggle={playback.setBodhranEnabled}
-          onSpoonToggle={playback.setSpoonEnabled}
-        />
+              {/* §9 PlayerControls */}
+              <PlayerControls
+                playback={playback}
+                practiceMode={practiceMode}
+                onPracticeModeChange={setPracticeMode}
+              />
 
-        {/* §11 저작권 푸터 */}
-        <footer className="copyright-footer">
-          Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
-          Ceoltóirí Éireann.
-        </footer>
-      </div>
+              {/* §9 ControlTray */}
+              <ControlTray
+                open={playback.trayOpen}
+                instrumentId={playback.instrumentId}
+                onInstrumentChange={playback.setInstrumentId}
+                bodhranEnabled={playback.bodhranEnabled}
+                spoonEnabled={playback.spoonEnabled}
+                onBodhranToggle={playback.setBodhranEnabled}
+                onSpoonToggle={playback.setSpoonEnabled}
+              />
+            </>
+          )}
+
+          {/* §11 저작권 푸터 */}
+          <footer className="copyright-footer">
+            Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
+            Ceoltóirí Éireann.
+          </footer>
+        </div>
       )}
     </div>
   );
