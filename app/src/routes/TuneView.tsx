@@ -160,22 +160,22 @@ export default function TuneView(): JSX.Element {
         />
       )}
 
-      {/* §10 메인 콘텐츠 영역 */}
+      {/* §10 메인 콘텐츠 영역 — 세로:상하 / 가로:좌우 (CSS 미디어쿼리로 제어) */}
       <div className="tune-content flex flex-1 min-h-0 overflow-hidden">
-        {/* 좌측: ScoreView (모든 해상도) */}
+        {/* 악보 (모든 해상도) */}
         <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} onScoreClick={handleScoreClick} />
 
-        {/* 우측: CompactPlayerControls (스마트폰 <768px 전용) */}
+        {/* 모바일/태블릿 컨트롤 — 세로:하단 / 가로:우측 (CSS로 표시 제어) */}
         {menuVisible && (
-          <div className="compact-controls hidden lg:flex flex-col border-l border-line">
+          <div className="mobile-controls flex flex-col">
             <CompactPlayerControls playback={playback} />
           </div>
         )}
       </div>
 
-      {/* 하단 컨트롤 영역 (데스크톱 ≥768px 전용) */}
+      {/* PC 전용 하단 컨트롤 영역 (≥1024px, CSS로 표시 제어) */}
       {menuVisible && (
-        <div className="controls-wrapper hidden lg:flex flex-none flex flex-col">
+        <div className="controls-wrapper flex-none flex flex-col">
           {/* 펼침/접힘 토글 버튼 */}
           <button
             onClick={toggleControls}
@@ -219,18 +219,13 @@ export default function TuneView(): JSX.Element {
             </>
           )}
 
-          {/* §11 저작권 푸터 */}
+          {/* §11 저작권 푸터 (PC 전용) */}
           <footer className="copyright-footer">
             Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
             Ceoltóirí Éireann.
           </footer>
         </div>
       )}
-
-      {/* 스마트폰용 푸터 */}
-      <footer className="copyright-footer lg:hidden">
-        Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann.
-      </footer>
     </div>
   );
 }

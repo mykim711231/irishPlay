@@ -44,8 +44,11 @@ export const CompactPlayerControls: React.FC<CompactPlayerControlsProps> = ({
 
   return (
     <div
-      className="flex flex-col gap-1 px-2 py-2 h-full overflow-y-auto"
-      style={{ background: 'var(--paper)', minWidth: '260px' }}
+      className="flex flex-col gap-1 px-2 py-2 h-full w-full overflow-y-auto"
+      style={{
+        background: 'var(--paper)',
+        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
+      }}
     >
       {/* 1줄: 재생 컨트롤 버튼 */}
       <div className="flex items-center gap-1 justify-center">

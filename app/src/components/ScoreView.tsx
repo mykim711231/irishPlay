@@ -19,27 +19,30 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const paperId = `abc-paper-${uid.replace(/:/g, '')}`;
   const sectionRef = useRef<HTMLElement>(null);
 
-  // staffwidth를 반응형으로 설정 → PC/태블릿/스마트폰 최적화
-  // PC(≥768px): 850px | 태블릿(500-767px): 600px | 스마트폰 가로(≥400px): 350px | 스마트폰 세로(<400px): 280px
+  // staffwidth + wrap 옵션으로 줄당 마디 수를 강제 → 악보 전체가 여러 줄로 표시
+  // abcjs는 staffwidth만으로 자동 줄바꿈하지 않으므로 wrap.preferredMeasuresPerLine 필수
   const renderScore = useCallback((containerWidth: number) => {
     if (!tune.abc) return;
+    const PADDING = 16;
     let staffwidth: number;
-    if (containerWidth < 400) {
-      // 스마트폰 세로 (<400px): 9~12마디 (악보 모두 보기, 최소 스크롤)
-      staffwidth = Math.max(360, containerWidth - 15);
-    } else if (containerWidth < 500) {
-      // 스마트폰 가로 (400-499px): 8~10마디
-      staffwidth = Math.max(350, containerWidth - 20);
-    } else if (containerWidth < 768) {
-      // 태블릿 (500-767px): 10~12마디
-      staffwidth = 600;
+    let measuresPerLine: number;
+    if (containerWidth < 768) {
+      // 모바일/태블릿: 컨테이너 폭에 맞춰 줄당 마디 수 결정 (세로 스크롤로 전체 악보)
+      staffwidth = Math.max(280, containerWidth - PADDING);
+      measuresPerLine = containerWidth < 420 ? 4 : 6;
     } else {
-      // PC/데스크톱 (≥768px): 고정값 850px (좌우 스크롤)
+      // PC/데스크톱 (≥768px): 고정값 850px, 줄당 8마디
       staffwidth = 850;
+      measuresPerLine = 8;
     }
     const visualObjs = abcjs.renderAbc(paperId, tune.abc, {
       add_classes: true,
       staffwidth,
+      wrap: {
+        minSpacing: 1.5,
+        maxSpacing: 2.5,
+        preferredMeasuresPerLine: measuresPerLine,
+      },
     } as any);
     if (visualObjs && visualObjs[0]) {
       onVisualObjReady(visualObjs[0]);

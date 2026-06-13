@@ -191,35 +191,56 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   }
 }
 
-/* ── 스마트폰 좌우 2칼럼 레이아웃 (< 768px) ── */
-@media (max-width: 767px) {
-  /* 메인 콘텐츠 영역: 좌우로 정렬 */
+/* ════════════════════════════════════════════════════════════
+   모바일/태블릿 적응형 레이아웃 (세로=상하, 가로=좌우)
+   - 기본(PC ≥1024px): 하단 controls-wrapper 사용, mobile-controls 숨김
+   - <1024px 세로: 악보(위) + 컨트롤(아래 전체폭)
+   - <1024px 가로: 악보(좌) + 컨트롤(우 180px)
+   ════════════════════════════════════════════════════════════ */
+
+/* 기본: PC는 mobile-controls 숨김 */
+.mobile-controls {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  /* 모바일·태블릿: PC 하단 컨트롤 숨김, mobile-controls 표시 */
+  .controls-wrapper {
+    display: none !important;
+  }
+  .mobile-controls {
+    display: flex !important;
+  }
+}
+
+/* 세로 모드: 악보 위 + 컨트롤 아래 (악보 전체폭 활용) */
+@media (max-width: 1023px) and (orientation: portrait) {
+  .tune-content {
+    flex-direction: column;
+  }
+  .score-section {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
+  .mobile-controls {
+    flex: none;
+    width: 100%;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* 가로 모드: 악보 좌 + 컨트롤 우 (좌우 2칼럼) */
+@media (max-width: 1023px) and (orientation: landscape) {
   .tune-content {
     flex-direction: row;
-    gap: 0;
   }
-
-  /* 좌측 악보 */
   .score-section {
     flex: 1;
     min-width: 0;
-    border-right: 1px solid var(--line);
   }
-
-  /* 우측 컨트롤 */
-  .compact-controls {
-    flex: 0 0 280px;
+  .mobile-controls {
+    flex: 0 0 180px;
     border-left: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-
-  /* 악보 최소 높이 축소 */
-  .abc-paper {
-    min-height: 100px;
-  }
-
-  /* 데스크톱용 컨트롤 숨김 */
-  .controls-wrapper {
-    display: none !important;
   }
 }
