@@ -3,7 +3,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Repeat, Gauge, Hand, Star, Ear, Play } from 'lucide-react';
-import { playNote } from '../audio/soundTest';
+
+// 오디오 모듈은 ▶ 클릭 시 동적 로드 → abcjs/tone을 초기 번들에서 제외
+async function playNoteDyn(note: string): Promise<void> {
+  const { playNote } = await import('../audio/soundTest');
+  void playNote(note);
+}
+async function playSnippetDyn(notes: string, meter = '4/4'): Promise<void> {
+  const { melodyPlayer } = await import('../audio/melodyPlayer');
+  void melodyPlayer.playSnippet(notes, meter);
+}
+async function previewRhythmDyn(rhythm: string, bpm = 110): Promise<void> {
+  const { previewRhythm } = await import('../audio/percussion');
+  void previewRhythm(rhythm, bpm);
+}
 
 type TabId = 'ornament' | 'whistle' | 'bodhran' | 'tune' | 'practice';
 
@@ -18,17 +31,17 @@ const TABS: { id: TabId; emoji: string; label: string }[] = [
 // ── 데이터 ──
 
 const ORNAMENTS = [
-  { name: '롤 (Roll)', symbol: '~', played: 'yes',
-    desc: '한 음을 「주음→윗음→주음→아랫음→주음」으로 빠르게 굴립니다. 릴·지그의 가장 핵심적인 장식으로, 긴 음의 단조로움을 피하고 리듬에 생기를 줍니다.' },
-  { name: '컷 (Cut)', symbol: '{음}', played: 'partial',
+  { name: '롤 (Roll)', symbol: '~', played: 'yes', ex: 'A4 ~A4',
+    desc: '한 음을 「주음→윗음→주음→아랫음→주음」으로 빠르게 굴립니다. 릴·지그의 가장 핵심적인 장식으로, 긴 음의 단조로움을 피하고 리듬에 생기를 줍니다. (▶ 평탄음 → 롤 비교)' },
+  { name: '컷 (Cut)', symbol: '{음}', played: 'partial', ex: 'a4 {b}a4',
     desc: '주음 바로 앞에 한 음 위를 순간적으로 스쳐 칩니다. 같은 음이 연속될 때 음을 분리·강조합니다.' },
-  { name: '탭 (Tap/Pat)', symbol: '{아랫음}', played: 'partial',
+  { name: '탭 (Tap/Pat)', symbol: '{아랫음}', played: 'partial', ex: 'g4 {f}g4',
     desc: '컷과 반대로 주음 앞에 한 음 아래를 순간적으로 짚어 악센트를 줍니다.' },
-  { name: '크란 (Cran)', symbol: '연속 컷', played: 'partial',
+  { name: '크란 (Cran)', symbol: '연속 컷', played: 'partial', ex: 'D4 {E}D{F}D{E}D',
     desc: '낮은 D처럼 아래로 굴릴 수 없는 음에서 여러 컷을 연속으로 넣습니다. 일리언 파이프에서 유래.' },
-  { name: '슬라이드 (Slide)', symbol: '↗', played: 'partial',
+  { name: '슬라이드 (Slide)', symbol: '↗', played: 'partial', ex: 'd4 {/c}d4',
     desc: '목표음보다 약간 아래에서 미끄러지듯 음정에 도달합니다. 느린 곡·폴카에서 표현력을 더합니다.' },
-  { name: '트리플렛 (Triplet)', symbol: '(3', played: 'yes',
+  { name: '트리플렛 (Triplet)', symbol: '(3', played: 'yes', ex: 'A2 (3ABc A2',
     desc: '한 박 안에 세 음을 균등하게 빠르게 연주해 짧은 질주감을 만듭니다.' },
 ];
 
@@ -45,13 +58,13 @@ const WHISTLE = [
 ];
 
 const BODHRAN = [
-  { name: '릴 (Reel) · 4/4', pattern: '↓↑ ↓↑ ↓↑ ↓↑',
+  { name: '릴 (Reel) · 4/4', rhythm: 'reel', bpm: 110, pattern: '↓↑ ↓↑ ↓↑ ↓↑',
     desc: '꾸준한 다운–업 8분음표. 2·4박에 악센트(강한 다운)를 주어 곡을 밀어붙입니다.' },
-  { name: '지그 (Jig) · 6/8', pattern: '↓ ↓↑  ↓ ↓↑',
+  { name: '지그 (Jig) · 6/8', rhythm: 'jig', bpm: 120, pattern: '↓ ↓↑  ↓ ↓↑',
     desc: '「다운–다운–업」 패턴. 1·4박을 강하게 짚어 6/8 특유의 바운스를 만듭니다.' },
-  { name: '혼파이프 (Hornpipe) · 4/4', pattern: '↓·↑  롱–숏 스윙',
+  { name: '혼파이프 (Hornpipe) · 4/4', rhythm: 'hornpipe', bpm: 90, pattern: '↓·↑  롱–숏 스윙',
     desc: '다운에 강세를 두고 통통 튀는 롱–숏 스윙으로 연주합니다.' },
-  { name: '폴카 (Polka) · 2/4', pattern: '↓↑ ↓↑',
+  { name: '폴카 (Polka) · 2/4', rhythm: 'polka', bpm: 120, pattern: '↓↑ ↓↑',
     desc: '간결하고 경쾌한 다운–업. 1박 강세로 단순하게 시작하기 좋습니다.' },
 ];
 
@@ -131,6 +144,17 @@ export const GuideView: React.FC = () => {
     </span>
   );
 
+  const playBtn = (onClick: () => void, label: string) => (
+    <button
+      onClick={onClick}
+      aria-label={label}
+      className="flex items-center justify-center w-7 h-7 rounded-full flex-shrink-0 transition-transform active:scale-90"
+      style={{ background: 'var(--teal)', color: '#fff' }}
+    >
+      <Play size={12} fill="white" style={{ marginLeft: 1 }} />
+    </button>
+  );
+
   return (
     <div className="flex flex-col h-full" style={{ background: 'var(--bg)' }}>
       {/* 헤더 */}
@@ -195,6 +219,7 @@ export const GuideView: React.FC = () => {
             {ORNAMENTS.map(o => (
               <div key={o.name} className="rounded-xl p-3" style={card}>
                 <div className="flex items-center gap-2 mb-1">
+                  {playBtn(() => void playSnippetDyn(o.ex), `${o.name} 듣기`)}
                   {symbolBadge(o.symbol)}
                   <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>{o.name}</span>
                   {playBadge(o.played)}
@@ -204,6 +229,7 @@ export const GuideView: React.FC = () => {
             ))}
             <div className="rounded-xl p-3" style={card}>
               <div className="flex items-center gap-2 mb-1">
+                {playBtn(() => void playSnippetDyn('A>B A>B A2'), '브로큰 리듬 듣기')}
                 {symbolBadge('>')}
                 <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>브로큰 리듬 (Swing)</span>
                 {playBadge('yes')}
@@ -225,7 +251,7 @@ export const GuideView: React.FC = () => {
             {WHISTLE.map(w => (
               <div key={w.note} className="rounded-xl px-3 py-2.5 flex items-center gap-3" style={card}>
                 <button
-                  onClick={() => void playNote(w.tone)}
+                  onClick={() => void playNoteDyn(w.tone)}
                   aria-label={`${w.note} 음 듣기`}
                   className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0 transition-transform active:scale-90"
                   style={{ background: 'var(--teal)', color: '#fff' }}
@@ -260,7 +286,8 @@ export const GuideView: React.FC = () => {
             </p>
             {BODHRAN.map(b => (
               <div key={b.name} className="rounded-xl p-3" style={card}>
-                <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  {playBtn(() => void previewRhythmDyn(b.rhythm, b.bpm), `${b.name} 리듬 듣기`)}
                   <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>{b.name}</span>
                 </div>
                 <div

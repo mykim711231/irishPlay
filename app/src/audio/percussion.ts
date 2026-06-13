@@ -116,6 +116,38 @@ export function pausePercussion(): void {
   getTransport().pause();
 }
 
+/**
+ * 가이드 "들어보기": 리듬 패턴을 enabled 플래그와 무관하게 잠깐 재생한다.
+ * 바우런(bass)·스푼(hihat) 소리를 모두 내어 패턴을 들려준다.
+ */
+export async function previewRhythm(
+  rhythm: string,
+  bpm: number,
+  durationMs = 4000
+): Promise<void> {
+  stopPercussion();
+  ensureSynths();
+  await toneStart();
+
+  const pattern = RHYTHM_PATTERNS[rhythm] ?? RHYTHM_PATTERNS.reel;
+  const subdivision = getRhythmSubdivision(rhythm);
+  getTransport().bpm.value = bpm;
+
+  sequence = new Sequence<string>(
+    (time: number, beat: string) => {
+      if (beat === 'D') bassSynth?.triggerAttackRelease('C2', '8n', time);
+      else if (beat === 't') hihatSynth?.triggerAttackRelease(400, '16n', time);
+    },
+    pattern,
+    subdivision
+  );
+  sequence.loop = true;
+  sequence.start(0);
+  getTransport().start();
+
+  setTimeout(() => stopPercussion(), durationMs);
+}
+
 export function resumePercussion(rhythm: string, bpm: number): void {
   if (!anyEnabled()) return;
   // Tone.js Transport 재개 대신 새로 시작 (더 안정적)

@@ -155,6 +155,28 @@ class MelodyPlayer {
     return this.state;
   }
 
+  /**
+   * 가이드 "들어보기": 짧은 ABC 음표열을 단발 재생 (장식음 예시).
+   * 곡 재생용 synth와 별개의 임시 synth를 사용하며, 롤(~)은 펼쳐서 소리낸다.
+   */
+  async playSnippet(notes: string, meter = '4/4', bpm = 110): Promise<void> {
+    const abc = `X:1\nL:1/8\nM:${meter}\nK:D\n${notes}`;
+    const expanded = expandRolls(abc);
+    const vobj = (abcjs as any).renderAbc('*', expanded, {})[0];
+    if (!vobj) return;
+    const ctx = await this.ensureAudioContext();
+    const snip = new (abcjs as any).synth.CreateSynth();
+    await snip.init({
+      visualObj: vobj,
+      audioContext: ctx,
+      millisecondsPerMeasure: calcMsPerMeasure(meter, bpm),
+    });
+    await snip.prime();
+    snip.start();
+    // snippet은 짧으므로 일정 시간 후 정리
+    setTimeout(() => { try { snip.stop(); } catch (_) { /* 무시 */ } }, 6000);
+  }
+
   private cleanup(): void {
     this.clearStartTimer();
     try { this.synth?.stop(); } catch (_) { /* 무시 */ }
