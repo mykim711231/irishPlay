@@ -240,7 +240,7 @@ export const GuideView: React.FC = () => {
                   <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>{o.name}</span>
                 </div>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>{o.desc}</p>
-                {o.played === 'partial' && <MiniScore abc={o.ex} />}
+                <MiniScore abc={o.ex} />
               </div>
             ))}
             <div className="rounded-xl p-3" style={card}>
@@ -252,6 +252,7 @@ export const GuideView: React.FC = () => {
               <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
                 혼파이프·일부 폴카의 「롱–숏」 스윙. 두 음을 같은 길이로 치지 않고 앞을 길게·뒤를 짧게 연주해 통통 튀는 느낌을 만듭니다.
               </p>
+              <MiniScore abc="A>B A>B A2" />
             </div>
           </div>
         )}
