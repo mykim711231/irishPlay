@@ -24,12 +24,14 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
   const renderScore = useCallback((containerWidth: number) => {
     if (!tune.abc) return;
     const PADDING = 16;
+    // 음표 최소 가독 폭: 이보다 좁으면 음표가 작아지는 대신 좌우 스크롤 (혼합 방식)
+    const MIN_STAFF = 420;
     let staffwidth: number;
     let measuresPerLine: number;
     if (containerWidth < 768) {
-      // 모바일/태블릿: 컨테이너 폭에 맞춰 줄당 마디 수 결정 (세로 스크롤로 전체 악보)
-      staffwidth = Math.max(280, containerWidth - PADDING);
-      measuresPerLine = containerWidth < 420 ? 4 : 6;
+      // 모바일/태블릿: 음표 최소 크기 보장 (컨테이너가 좁으면 좌우 스크롤)
+      staffwidth = Math.max(MIN_STAFF, containerWidth - PADDING);
+      measuresPerLine = staffwidth < 480 ? 4 : 6;
     } else {
       // PC/데스크톱 (≥768px): 고정값 850px, 줄당 8마디
       staffwidth = 850;
@@ -79,8 +81,6 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
         id={paperId}
         className="abc-paper p-2 sm:p-3 shadow-sm mx-auto"
         style={{
-          width: '100%',
-          maxWidth: '100%',
           boxSizing: 'border-box',
         }}
       />
