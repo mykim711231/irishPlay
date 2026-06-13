@@ -1,6 +1,6 @@
 // GuideView: 아일랜드 음악 연주 가이드 (장식음·휘슬·바우런·튠·연습)
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Repeat, Gauge, Hand, Star, Ear, Play } from 'lucide-react';
 
@@ -17,6 +17,27 @@ async function previewRhythmDyn(rhythm: string, bpm = 110): Promise<void> {
   const { previewRhythm } = await import('../audio/percussion');
   void previewRhythm(rhythm, bpm);
 }
+
+// 미니 악보: 장식음이 악보에 어떻게 표시되는지 abcjs로 렌더 (동적 import)
+const MiniScore: React.FC<{ abc: string }> = ({ abc }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void import('abcjs').then(m => {
+      if (cancelled || !ref.current) return;
+      (m.default as any).renderAbc(ref.current, `X:1\nL:1/8\nK:D\n${abc}`, {
+        staffwidth: 200,
+        scale: 0.85,
+        paddingtop: 2,
+        paddingbottom: 2,
+        paddingleft: 0,
+        paddingright: 0,
+      });
+    });
+    return () => { cancelled = true; };
+  }, [abc]);
+  return <div ref={ref} className="mt-2 overflow-x-auto" aria-label="악보 예시" />;
+};
 
 type TabId = 'ornament' | 'whistle' | 'bodhran' | 'tune' | 'practice';
 
@@ -122,19 +143,6 @@ export const GuideView: React.FC = () => {
     border: '1px solid var(--line)',
   } as const;
 
-  const playBadge = (played: string) => (
-    <span
-      className="ml-auto text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-      style={{
-        background: played === 'yes' ? 'rgba(31,111,107,.12)' : 'var(--bg)',
-        color: played === 'yes' ? 'var(--teal)' : 'var(--dim)',
-        border: played === 'yes' ? 'none' : '1px solid var(--line)',
-      }}
-    >
-      {played === 'yes' ? '🔊 소리' : '👁 악보'}
-    </span>
-  );
-
   const symbolBadge = (s: string) => (
     <span
       className="inline-flex items-center justify-center px-2 py-0.5 rounded-md font-mono text-sm flex-shrink-0"
@@ -213,18 +221,18 @@ export const GuideView: React.FC = () => {
         {tab === 'ornament' && (
           <div className="flex flex-col gap-2">
             <p className="text-xs mb-1 leading-relaxed" style={{ color: 'var(--dim)' }}>
-              같은 멜로디라도 어디에 어떤 장식을 넣느냐에 따라 곡이 달라집니다. 악보 기호로 위치를 확인하세요.
-              「🔊 소리」는 재생에 들리고, 「👁 악보」는 악보에만 표시됩니다.
+              같은 멜로디라도 어디에 어떤 장식을 넣느냐에 따라 곡이 달라집니다.
+              ▶가 있는 장식은 소리로 들어볼 수 있고, 나머지는 악보에 표시되는 모습을 보여줍니다.
             </p>
             {ORNAMENTS.map(o => (
               <div key={o.name} className="rounded-xl p-3" style={card}>
                 <div className="flex items-center gap-2 mb-1">
-                  {playBtn(() => void playSnippetDyn(o.ex), `${o.name} 듣기`)}
+                  {o.played === 'yes' && playBtn(() => void playSnippetDyn(o.ex), `${o.name} 듣기`)}
                   {symbolBadge(o.symbol)}
                   <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>{o.name}</span>
-                  {playBadge(o.played)}
                 </div>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>{o.desc}</p>
+                {o.played === 'partial' && <MiniScore abc={o.ex} />}
               </div>
             ))}
             <div className="rounded-xl p-3" style={card}>
@@ -232,7 +240,6 @@ export const GuideView: React.FC = () => {
                 {playBtn(() => void playSnippetDyn('A>B A>B A2'), '브로큰 리듬 듣기')}
                 {symbolBadge('>')}
                 <span className="font-medium" style={{ color: 'var(--ink)', fontSize: '0.92rem' }}>브로큰 리듬 (Swing)</span>
-                {playBadge('yes')}
               </div>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
                 혼파이프·일부 폴카의 「롱–숏」 스윙. 두 음을 같은 길이로 치지 않고 앞을 길게·뒤를 짧게 연주해 통통 튀는 느낌을 만듭니다.
