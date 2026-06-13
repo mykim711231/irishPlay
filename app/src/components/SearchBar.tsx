@@ -20,6 +20,7 @@ const RHYTHMS = [
 interface SearchBarProps {
   onSearch: (query: string) => void;
   onRhythmChange: (rhythm: string) => void;
+  onBookChange: (book: number) => void;
   resultCount: number;
   totalCount: number;
 }
@@ -27,12 +28,14 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   onRhythmChange,
+  onBookChange,
   resultCount,
   totalCount,
 }) => {
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const [selectedRhythm, setSelectedRhythm] = useState('');
+  const [selectedBook, setSelectedBook] = useState(0);
 
   const handleInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +60,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     [onRhythmChange],
   );
 
-  const isFiltered = query.length > 0 || selectedRhythm !== '';
+  const handleBook = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const val = Number(e.target.value);
+      setSelectedBook(val);
+      onBookChange(val);
+    },
+    [onBookChange],
+  );
+
+  const isFiltered = query.length > 0 || selectedRhythm !== '' || selectedBook !== 0;
 
   return (
     <div
@@ -143,6 +155,28 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               {r.charAt(0).toUpperCase() + r.slice(1)}
             </option>
           ))}
+        </select>
+
+        {/* Book 필터 */}
+        <select
+          value={selectedBook}
+          onChange={handleBook}
+          style={{
+            flex: '0 0 auto',
+            border: `1.5px solid ${selectedBook ? 'var(--teal)' : 'var(--line)'}`,
+            borderRadius: '8px',
+            padding: '4px 8px',
+            fontSize: '0.8rem',
+            color: selectedBook ? 'var(--teal)' : 'var(--dim)',
+            background: 'var(--bg)',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="0">모든 Book</option>
+          <option value="1">Book 1</option>
+          <option value="2">Book 2</option>
+          <option value="3">Book 3</option>
         </select>
 
         <span

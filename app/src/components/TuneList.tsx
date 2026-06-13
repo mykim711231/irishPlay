@@ -39,12 +39,14 @@ export const TuneList: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery]     = useState('');
   const [selectedRhythm, setSelectedRhythm] = useState('');
+  const [selectedBook, setSelectedBook]   = useState(0);
   const [favOnly, setFavOnly]             = useState(false);
 
   const { isFavorite, toggleFavorite, count: favCount } = useFavorites();
 
   const handleSearch = useCallback((q: string) => setSearchQuery(q), []);
   const handleRhythm = useCallback((r: string) => setSelectedRhythm(r), []);
+  const handleBook = useCallback((b: number) => setSelectedBook(b), []);
 
   const setMap = useMemo(() => {
     const m: Record<string, SetItem> = {};
@@ -58,10 +60,11 @@ export const TuneList: React.FC = () => {
     return allTunes.filter(t => {
       const titleMatch  = t.title.toLowerCase().includes(searchQuery);
       const rhythmMatch = !selectedRhythm || t.rhythm === selectedRhythm;
+      const bookMatch   = !selectedBook || t.book === selectedBook;
       const favMatch    = !favOnly || isFavorite(t.id);
-      return titleMatch && rhythmMatch && favMatch;
+      return titleMatch && rhythmMatch && bookMatch && favMatch;
     });
-  }, [allTunes, searchQuery, selectedRhythm, favOnly, isFavorite]);
+  }, [allTunes, searchQuery, selectedRhythm, selectedBook, favOnly, isFavorite]);
 
   const groupedByBook = useMemo(() => {
     const groups: Record<number, TuneItem[]> = { 1: [], 2: [], 3: [] };
@@ -137,6 +140,7 @@ export const TuneList: React.FC = () => {
       <SearchBar
         onSearch={handleSearch}
         onRhythmChange={handleRhythm}
+        onBookChange={handleBook}
         resultCount={filteredTunes.length}
         totalCount={favOnly ? favCount : allTunes.length}
       />
