@@ -9,7 +9,7 @@ type TabId = 'ornament' | 'whistle' | 'bodhran' | 'tune' | 'practice';
 const TABS: { id: TabId; emoji: string; label: string }[] = [
   { id: 'ornament', emoji: '🎵', label: '장식음' },
   { id: 'whistle',  emoji: '🪈', label: '휘슬' },
-  { id: 'bodhran',  emoji: '🥁', label: '바우런' },
+  { id: 'bodhran',  emoji: '🥁', label: '타악기' },
   { id: 'tune',     emoji: '🎼', label: '튠' },
   { id: 'practice', emoji: '📖', label: '연습' },
 ];
@@ -52,6 +52,13 @@ const BODHRAN = [
     desc: '다운에 강세를 두고 통통 튀는 롱–숏 스윙으로 연주합니다.' },
   { name: '폴카 (Polka) · 2/4', pattern: '↓↑ ↓↑',
     desc: '간결하고 경쾌한 다운–업. 1박 강세로 단순하게 시작하기 좋습니다.' },
+];
+
+const SPOONS = [
+  { title: '잡는 법', desc: '두 스푼을 등을 맞대고 한 손에 쥡니다. 검지를 두 스푼 사이에 방아쇠처럼 끼우고, 엄지를 위쪽 손잡이에 얹습니다. 스푼 바닥 사이에 약 1.5cm 간격을 둬야 부딪칠 때 「딸깍」 소리가 납니다. 너무 꽉 쥐면 소리가 안 나고, 너무 느슨하면 떨어집니다.' },
+  { title: '치는 법', desc: '무릎(허벅지)과 반대편 손바닥 사이를 왔다갔다 칩니다. 스푼 쥔 손은 다리 위 10~15cm 높이에서, 손목 스냅으로 가볍게. 세게 치면 금방 아프고 놓치기 쉬우니 살살 연습하세요.' },
+  { title: '리듬', desc: '바우런과 같은 다운–업·트리플렛 리듬을 따릅니다. 릴은 ↓↑ 연속, 지그는 다운–다운–업. 위 바우런 패턴을 그대로 적용하면 됩니다.' },
+  { title: '손가락 글라이드 (고급)', desc: '스푼을 쥐지 않은 손의 손가락을 펴서 45도로 세우고, 그 손가락 위로 스푼을 빠르게 끌어내리면 트레몰로 같은 연속음(roll)이 납니다.' },
 ];
 
 const TUNES = [
@@ -258,6 +265,24 @@ export const GuideView: React.FC = () => {
             ))}
             <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--dim)' }}>
               ※ 이 앱의 바우런(🥁) 토글을 켜면 곡의 리듬에 맞춰 패턴이 자동 재생됩니다. 함께 따라 쳐보세요.
+            </p>
+
+            {/* 스푼 */}
+            <div className="flex items-center gap-2 mt-4 mb-1">
+              <span className="text-lg">🥄</span>
+              <h2 className="font-semibold" style={{ fontSize: '0.95rem', color: 'var(--ink)' }}>스푼 (Spoons)</h2>
+            </div>
+            <p className="text-xs mb-1 leading-relaxed" style={{ color: 'var(--dim)' }}>
+              두 개의 숟가락만 있으면 되는 가장 소박한 타악기입니다. 바우런과 같은 리듬을 더 가볍고 또렷한 「딸깍」 소리로 연주합니다.
+            </p>
+            {SPOONS.map(s => (
+              <div key={s.title} className="rounded-xl p-3" style={card}>
+                <p className="font-medium mb-0.5" style={{ color: 'var(--ink)', fontSize: '0.9rem' }}>{s.title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>{s.desc}</p>
+              </div>
+            ))}
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--dim)' }}>
+              ※ 이 앱의 스푼(🥄) 토글로 소리를 켤 수 있습니다.
             </p>
           </div>
         )}
