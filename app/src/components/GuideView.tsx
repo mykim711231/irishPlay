@@ -36,7 +36,15 @@ const MiniScore: React.FC<{ abc: string }> = ({ abc }) => {
     });
     return () => { cancelled = true; };
   }, [abc]);
-  return <div ref={ref} className="mt-2 overflow-x-auto" aria-label="악보 예시" />;
+  // 흰 종이 배경 → 다크 테마에서도 검정 음표가 보이도록
+  return (
+    <div
+      ref={ref}
+      className="mt-2 overflow-x-auto"
+      aria-label="악보 예시"
+      style={{ background: '#fff', borderRadius: 6, padding: '2px 4px' }}
+    />
+  );
 };
 
 type TabId = 'ornament' | 'whistle' | 'bodhran' | 'tune' | 'practice';
