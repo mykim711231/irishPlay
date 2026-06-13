@@ -48,16 +48,41 @@ export default function TuneView(): JSX.Element {
       toggleLoop: playback.toggleLoop,
     });
 
-  // 메뉴 숨김 상태 (악보 탭으로 토글)
-  const [menuVisible, setMenuVisible] = useState(true);
+  // 메뉴 숨김 상태 (localStorage에 저장, 악보 탭으로 토글)
+  const [menuVisible, setMenuVisible] = useState(() => {
+    try {
+      const saved = localStorage.getItem('irishPlay_menuVisible');
+      return saved === null ? true : saved === 'true';
+    } catch {
+      return true;
+    }
+  });
+
   const hideMenuTimer = useRef<NodeJS.Timeout>();
 
   const handleScoreClick = useCallback(() => {
-    setMenuVisible(v => !v);
-    // 자동 숨김 해제 (5초 후)
-    if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
-    hideMenuTimer.current = setTimeout(() => setMenuVisible(true), 5000);
-  }, []);
+    setMenuVisible(v => {
+      const newVal = !v;
+      try {
+        localStorage.setItem('irishPlay_menuVisible', String(newVal));
+      } catch (e) {
+        console.error('Failed to save menu state:', e);
+      }
+      return newVal;
+    });
+    // 자동 표시 해제 (5초 후) — menuVisible이 false일 때만
+    if (!menuVisible) {
+      if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
+      hideMenuTimer.current = setTimeout(() => {
+        setMenuVisible(true);
+        try {
+          localStorage.setItem('irishPlay_menuVisible', 'true');
+        } catch (e) {
+          console.error('Failed to save menu state:', e);
+        }
+      }, 5000);
+    }
+  }, [menuVisible]);
 
   useEffect(() => {
     return () => {
