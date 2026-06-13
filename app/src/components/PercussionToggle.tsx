@@ -1,20 +1,22 @@
-// sf3-generated | PercussionToggle: 바우런/스푼 퍼커션 토글
+// sf3-generated | PercussionToggle: 퍼커션 개별 악기 토글 (재사용 가능)
 
 import React from 'react';
 
 interface PercussionToggleProps {
+  label: string;
   enabled: boolean;
   onToggle: (v: boolean) => void;
 }
 
 export const PercussionToggle: React.FC<PercussionToggleProps> = ({
+  label,
   enabled,
   onToggle,
 }) => {
   return (
     <div className="flex items-center justify-between">
       <span className="text-xs font-medium" style={{ color: 'var(--dim)' }}>
-        바우런 / 스푼
+        {label}
       </span>
       <button
         role="switch"
@@ -31,7 +33,7 @@ export const PercussionToggle: React.FC<PercussionToggleProps> = ({
             transform: enabled ? 'translateX(20px)' : 'translateX(0)',
           }}
         />
-        <span className="sr-only">퍼커션 {enabled ? '끄기' : '켜기'}</span>
+        <span className="sr-only">{label} {enabled ? '끄기' : '켜기'}</span>
       </button>
     </div>
   );

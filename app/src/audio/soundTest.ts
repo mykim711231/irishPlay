@@ -5,10 +5,12 @@
 //  - Tone.start()는 사용자 이벤트(onChange/onClick) 안에서만 호출
 //  - testInstrument: 동시 재생 방지 (이전 테스트 진행 중이면 무시)
 //  - testPercussion: ON 시에만 타격음, OFF 시 무음
+//  - testSpoon: ON 시에만 하이햇음, OFF 시 무음
 
 import {
   Synth,
   MembraneSynth,
+  MetalSynth,
   start as toneStart,
   now as toneNow,
 } from 'tone';
@@ -18,6 +20,7 @@ import { getInstrument } from '../data/instruments';
 
 let testSynth: Synth | null = null;
 let testPercSynth: MembraneSynth | null = null;
+let testSpoonSynth: MetalSynth | null = null;
 let testInProgress = false;
 
 // ─── 헬퍼 ────────────────────────────────────────────────────────────────────
@@ -67,6 +70,22 @@ function ensureTestPercSynth(): MembraneSynth {
   return testPercSynth;
 }
 
+/** MetalSynth 싱글턴 (testSpoon 전용) */
+function ensureTestSpoonSynth(): MetalSynth {
+  if (!testSpoonSynth) {
+    testSpoonSynth = new MetalSynth({
+      envelope: { attack: 0.001, decay: 0.08, release: 0.01 },
+      harmonicity: 5.1,
+      modulationIndex: 32,
+      resonance: 4000,
+      octaves: 1.5,
+    }).toDestination();
+    testSpoonSynth.frequency.value = 400;
+    testSpoonSynth.volume.value = -10;
+  }
+  return testSpoonSynth;
+}
+
 // ─── 공개 API ─────────────────────────────────────────────────────────────────
 
 /**
@@ -94,9 +113,9 @@ export async function testInstrument(instrumentId: string): Promise<void> {
 }
 
 /**
- * 퍼커션 토글 시 피드백음 재생.
- * - enabled = true  → 베이스 타격음 (C2, 8분음표)
- * - enabled = false → 무음 (이미 꺼진 상태이므로 재생 불필요)
+ * 바우런 토글 시 피드백음 재생 (MembraneSynth 베이스 타격).
+ * - enabled = true  → 타격음 (C2, 8분음표)
+ * - enabled = false → 무음
  */
 export async function testPercussion(enabled: boolean): Promise<void> {
   if (!enabled) return;
@@ -106,4 +125,18 @@ export async function testPercussion(enabled: boolean): Promise<void> {
 
   const synth = ensureTestPercSynth();
   synth.triggerAttackRelease('C2', '8n', toneNow());
+}
+
+/**
+ * 스푼 토글 시 피드백음 재생 (MetalSynth 하이햇).
+ * - enabled = true  → 하이햇 틱음
+ * - enabled = false → 무음
+ */
+export async function testSpoon(enabled: boolean): Promise<void> {
+  if (!enabled) return;
+
+  await toneStart();
+
+  const synth = ensureTestSpoonSynth();
+  synth.triggerAttackRelease(400, '16n', toneNow());
 }

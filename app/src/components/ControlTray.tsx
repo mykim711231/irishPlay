@@ -3,33 +3,42 @@
 import React from 'react';
 import { InstrumentPicker } from './InstrumentPicker';
 import { PercussionToggle } from './PercussionToggle';
-import { testPercussion } from '../audio/soundTest';
+import { testPercussion, testSpoon } from '../audio/soundTest';
 
 interface ControlTrayProps {
   open: boolean;
   instrumentId: string;
   onInstrumentChange: (id: string) => void;
-  percussionEnabled: boolean;
-  onPercussionToggle: (v: boolean) => void;
+  bodhranEnabled: boolean;
+  spoonEnabled: boolean;
+  onBodhranToggle: (v: boolean) => void;
+  onSpoonToggle: (v: boolean) => void;
 }
 
 export const ControlTray: React.FC<ControlTrayProps> = ({
   open,
   instrumentId,
   onInstrumentChange,
-  percussionEnabled,
-  onPercussionToggle,
+  bodhranEnabled,
+  spoonEnabled,
+  onBodhranToggle,
+  onSpoonToggle,
 }) => {
-  const handlePercussionToggle = (v: boolean) => {
+  const handleBodhranToggle = (v: boolean) => {
     void testPercussion(v);
-    onPercussionToggle(v);
+    onBodhranToggle(v);
+  };
+
+  const handleSpoonToggle = (v: boolean) => {
+    void testSpoon(v);
+    onSpoonToggle(v);
   };
 
   return (
     <div
       className="overflow-hidden transition-all duration-300 ease-in-out"
       style={{
-        maxHeight: open ? 120 : 0,
+        maxHeight: open ? 160 : 0,
         borderTop: open ? '1px solid var(--line)' : 'none',
       }}
       aria-hidden={!open}
@@ -43,8 +52,14 @@ export const ControlTray: React.FC<ControlTrayProps> = ({
           onChange={onInstrumentChange}
         />
         <PercussionToggle
-          enabled={percussionEnabled}
-          onToggle={handlePercussionToggle}
+          label="🥁 바우런"
+          enabled={bodhranEnabled}
+          onToggle={handleBodhranToggle}
+        />
+        <PercussionToggle
+          label="🥄 스푼"
+          enabled={spoonEnabled}
+          onToggle={handleSpoonToggle}
         />
       </div>
     </div>

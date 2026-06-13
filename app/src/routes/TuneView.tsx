@@ -93,33 +93,38 @@ export default function TuneView(): JSX.Element {
         }}
       />
 
-      {/* §10 ScoreView */}
+      {/* §10 ScoreView — flex-1로 남은 공간 최대 점유 */}
       <ScoreView tune={tune} onVisualObjReady={setVisualObjStable} />
 
-      {/* 세트 내 곡 이동 */}
-      <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
+      {/* 하단 컨트롤 영역 — flex-none으로 고정 높이 유지 */}
+      <div className="controls-wrapper flex-none">
+        {/* 세트 내 곡 이동 */}
+        <SetPlayer setId={tune.setId} currentTuneId={tune.id} />
 
-      {/* §9 PlayerControls */}
-      <PlayerControls
-        playback={playback}
-        practiceMode={practiceMode}
-        onPracticeModeChange={setPracticeMode}
-      />
+        {/* §9 PlayerControls */}
+        <PlayerControls
+          playback={playback}
+          practiceMode={practiceMode}
+          onPracticeModeChange={setPracticeMode}
+        />
 
-      {/* §9 ControlTray */}
-      <ControlTray
-        open={playback.trayOpen}
-        instrumentId={playback.instrumentId}
-        onInstrumentChange={playback.setInstrumentId}
-        percussionEnabled={playback.percussionEnabled}
-        onPercussionToggle={playback.setPercussionEnabled}
-      />
+        {/* §9 ControlTray */}
+        <ControlTray
+          open={playback.trayOpen}
+          instrumentId={playback.instrumentId}
+          onInstrumentChange={playback.setInstrumentId}
+          bodhranEnabled={playback.bodhranEnabled}
+          spoonEnabled={playback.spoonEnabled}
+          onBodhranToggle={playback.setBodhranEnabled}
+          onSpoonToggle={playback.setSpoonEnabled}
+        />
 
-      {/* §11 저작권 푸터 */}
-      <footer className="copyright-footer">
-        Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
-        Ceoltóirí Éireann.
-      </footer>
+        {/* §11 저작권 푸터 */}
+        <footer className="copyright-footer">
+          Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
+          Ceoltóirí Éireann.
+        </footer>
+      </div>
     </div>
   );
 }

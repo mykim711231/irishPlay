@@ -6,7 +6,8 @@ import {
   startPercussion,
   stopPercussion,
   setPercussionBpm,
-  setPercussionEnabled as setPercEnabledAudio,
+  setBodhranEnabled as setBodhranEnabledAudio,
+  setSpoonEnabled as setSpoonEnabledAudio,
 } from '../audio/percussion';
 
 export type PlayState = 'idle' | 'loading' | 'playing' | 'paused';
@@ -30,12 +31,14 @@ export interface PlaybackHandle {
   tuneDefaultBpm: number;
   isLooping: boolean;
   instrumentId: string;
-  percussionEnabled: boolean;
+  bodhranEnabled: boolean;
+  spoonEnabled: boolean;
   trayOpen: boolean;
   setBpm: (v: number) => void;
   toggleLoop: () => void;
   setInstrumentId: (id: string) => void;
-  setPercussionEnabled: (v: boolean) => void;
+  setBodhranEnabled: (v: boolean) => void;
+  setSpoonEnabled: (v: boolean) => void;
   setTrayOpen: (v: boolean) => void;
   play: () => Promise<void>;
   pause: () => void;
@@ -92,30 +95,44 @@ function markCurrentLine(ev: any): void {
   }
 }
 
+// localStorage 키
+const LS_BODHRAN = 'irishPlay_bodhranEnabled';
+const LS_SPOON   = 'irishPlay_spoonEnabled';
+
 export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   const [playState, setPlayState] = useState<PlayState>('idle');
   const [bpm, setBpmState] = useState(tune?.defaultBpm ?? 120);
   const [isLooping, setIsLooping] = useState(false);
   const [instrumentId, setInstrumentIdState] = useState('fiddle');
-  const [percEnabled, setPercEnabledState] = useState(false);
+
+  // 바우런 / 스푼 개별 상태 (localStorage에서 복원)
+  const [bodhranEnabled, setBodhranState] = useState<boolean>(
+    () => localStorage.getItem(LS_BODHRAN) === 'true'
+  );
+  const [spoonEnabled, setSpoonState] = useState<boolean>(
+    () => localStorage.getItem(LS_SPOON) === 'true'
+  );
+
   const [trayOpen, setTrayOpen] = useState(false);
 
   // 콜백에서 쓸 ref들 (stale closure 방지)
   const loopRef = useRef(false);
   const bpmRef = useRef(bpm);
   const instrRef = useRef(instrumentId);
-  const percRef = useRef(false);
+  const bodhranRef = useRef(bodhranEnabled);
+  const spoonRef = useRef(spoonEnabled);
   const tuneRef = useRef(tune);
   const visualObjRef = useRef(visualObj);
   const playStateRef = useRef<PlayState>('idle');
 
-  useEffect(() => { loopRef.current = isLooping; },       [isLooping]);
-  useEffect(() => { bpmRef.current = bpm; },              [bpm]);
-  useEffect(() => { instrRef.current = instrumentId; },   [instrumentId]);
-  useEffect(() => { percRef.current = percEnabled; },     [percEnabled]);
-  useEffect(() => { tuneRef.current = tune; },            [tune]);
-  useEffect(() => { visualObjRef.current = visualObj; },  [visualObj]);
-  useEffect(() => { playStateRef.current = playState; },  [playState]);
+  useEffect(() => { loopRef.current = isLooping; },         [isLooping]);
+  useEffect(() => { bpmRef.current = bpm; },                [bpm]);
+  useEffect(() => { instrRef.current = instrumentId; },     [instrumentId]);
+  useEffect(() => { bodhranRef.current = bodhranEnabled; }, [bodhranEnabled]);
+  useEffect(() => { spoonRef.current = spoonEnabled; },     [spoonEnabled]);
+  useEffect(() => { tuneRef.current = tune; },              [tune]);
+  useEffect(() => { visualObjRef.current = visualObj; },    [visualObj]);
+  useEffect(() => { playStateRef.current = playState; },    [playState]);
 
   // 곡이 바뀌면 정지 + BPM 초기화
   useEffect(() => {
@@ -126,10 +143,14 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tune?.id]);
 
-  // percEnabled 변경 → 오디오 모듈에 반영
+  // bodhranEnabled / spoonEnabled 변경 → 오디오 모듈에 반영
   useEffect(() => {
-    setPercEnabledAudio(percEnabled);
-  }, [percEnabled]);
+    setBodhranEnabledAudio(bodhranEnabled);
+  }, [bodhranEnabled]);
+
+  useEffect(() => {
+    setSpoonEnabledAudio(spoonEnabled);
+  }, [spoonEnabled]);
 
   // ── 내부 재생 시작 (ref 값 사용 → stale closure 없음) ──
   const triggerPlay = useCallback(async () => {
@@ -167,7 +188,7 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
 
       // §15 항목 4: BPM 슬라이더 변경 시 퍼커션·멜로디 둘 다 갱신
       setPercussionBpm(bpmRef.current);
-      if (percRef.current) {
+      if (bodhranRef.current || spoonRef.current) {
         await startPercussion(t.rhythm, bpmRef.current);
       }
     } catch (err) {
@@ -183,7 +204,7 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
     if (cur === 'paused') {
       melodyPlayer.resume();
       const t = tuneRef.current;
-      if (percRef.current && t) {
+      if ((bodhranRef.current || spoonRef.current) && t) {
         await startPercussion(t.rhythm, bpmRef.current);
       }
       setPlayState('playing');
@@ -236,13 +257,32 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
     }
   }, [triggerPlay]);
 
-  const handleSetPercussion = useCallback((v: boolean) => {
-    setPercEnabledState(v);
-    setPercEnabledAudio(v);
-    if (!v) {
+  // 바우런 토글 핸들러
+  const handleSetBodhran = useCallback((v: boolean) => {
+    localStorage.setItem(LS_BODHRAN, String(v));
+    setBodhranState(v);
+    setBodhranEnabledAudio(v);
+    const spoon = spoonRef.current;
+    if (!v && !spoon) {
       stopPercussion();
     } else if (playStateRef.current === 'playing' && tuneRef.current) {
-      // 재생 중 퍼커션 활성화 → 즉시 시작
+      // 재생 중 활성화 → 시퀀스를 업데이트된 플래그로 재시작
+      void startPercussion(tuneRef.current.rhythm, bpmRef.current);
+    } else if (!v && spoon && playStateRef.current === 'playing' && tuneRef.current) {
+      // 바우런만 끄고 스푼이 켜져 있으면 스푼만으로 재시작
+      void startPercussion(tuneRef.current.rhythm, bpmRef.current);
+    }
+  }, []);
+
+  // 스푼 토글 핸들러
+  const handleSetSpoon = useCallback((v: boolean) => {
+    localStorage.setItem(LS_SPOON, String(v));
+    setSpoonState(v);
+    setSpoonEnabledAudio(v);
+    const bodhran = bodhranRef.current;
+    if (!v && !bodhran) {
+      stopPercussion();
+    } else if (playStateRef.current === 'playing' && tuneRef.current) {
       void startPercussion(tuneRef.current.rhythm, bpmRef.current);
     }
   }, []);
@@ -253,12 +293,14 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
     tuneDefaultBpm: tune?.defaultBpm ?? bpm,
     isLooping,
     instrumentId,
-    percussionEnabled: percEnabled,
+    bodhranEnabled,
+    spoonEnabled,
     trayOpen,
     setBpm,
     toggleLoop,
     setInstrumentId,
-    setPercussionEnabled: handleSetPercussion,
+    setBodhranEnabled: handleSetBodhran,
+    setSpoonEnabled: handleSetSpoon,
     setTrayOpen,
     play,
     pause,

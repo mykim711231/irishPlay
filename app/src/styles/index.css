@@ -24,11 +24,19 @@
 .abc-paper {
   background: var(--paper);
   border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  /* 최소 높이 보장 (빈 악보도 공간 차지) */
+  min-height: 200px;
 }
 
 .abc-paper svg {
   width: 100% !important;
   height: auto !important;
+  display: block;
+  /* viewBox 기반 자동 스케일링 */
+  max-width: 100%;
+  overflow: visible;
 }
 
 /* 현재 재생 음표 하이라이트 */
@@ -73,4 +81,40 @@ body.focus svg .abcjs-staff-wrapper.cur-line {
   background: var(--bg);
   border-top: 1px solid var(--line);
   flex-shrink: 0;
+}
+
+/* ── 악보 섹션 ── */
+.score-section {
+  /* flex-1은 Tailwind 클래스로 적용, minHeight: 0은 인라인으로 적용 */
+}
+
+/* ── 모바일 반응형 ── */
+@media (max-width: 768px) {
+  /* 악보 섹션: 화면의 최소 40vh 확보 */
+  .score-section {
+    min-height: 40vh;
+  }
+
+  /* abc-paper: 모바일 최소 높이 */
+  .abc-paper {
+    min-height: 200px;
+    border-radius: 8px;
+  }
+
+  /* 컨트롤 영역: 높이 제한으로 악보 공간 보호 */
+  .controls-wrapper {
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+}
+
+/* 매우 작은 화면 (390px 이하, 일반 스마트폰 세로) */
+@media (max-width: 390px) {
+  .score-section {
+    min-height: 45vh;
+  }
+
+  .controls-wrapper {
+    max-height: 48vh;
+  }
 }

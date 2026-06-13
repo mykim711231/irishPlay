@@ -17,7 +17,10 @@ import { RHYTHM_PATTERNS, getRhythmSubdivision } from './rhythmPatterns';
 let bassSynth: MembraneSynth | null = null;
 let hihatSynth: MetalSynth | null = null;
 let sequence: Sequence<string> | null = null;
-let _enabled = false;
+
+// 바우런 / 스푼 개별 활성 플래그
+let _bodhranEnabled = false;
+let _spoonEnabled = false;
 
 function ensureSynths(): void {
   if (!bassSynth) {
@@ -48,16 +51,26 @@ export function setPercussionBpm(bpm: number): void {
   getTransport().bpm.value = bpm;
 }
 
-export function setPercussionEnabled(enabled: boolean): void {
-  _enabled = enabled;
+export function setBodhranEnabled(enabled: boolean): void {
+  _bodhranEnabled = enabled;
+}
+
+export function setSpoonEnabled(enabled: boolean): void {
+  _spoonEnabled = enabled;
+}
+
+/** 어느 한 악기라도 켜져 있는지 */
+function anyEnabled(): boolean {
+  return _bodhranEnabled || _spoonEnabled;
 }
 
 /**
  * 퍼커션 시작. rhythm에 맞는 패턴을 Tone.Sequence로 재생.
+ * 바우런(D)과 스푼(t) 플래그를 각각 확인하여 개별 제어.
  * §15 항목 1: AudioContext 시작은 사용자 이벤트 후 호출된 Tone.start()에 의존
  */
 export async function startPercussion(rhythm: string, bpm: number): Promise<void> {
-  if (!_enabled) return;
+  if (!anyEnabled()) return;
 
   stopPercussion();
   ensureSynths();
@@ -72,13 +85,11 @@ export async function startPercussion(rhythm: string, bpm: number): Promise<void
 
   sequence = new Sequence<string>(
     (time: number, beat: string) => {
-      if (beat === 'D') {
+      if (beat === 'D' && _bodhranEnabled) {
         // C1(약 32Hz)은 일반 스피커로 재생 불가 → C2(약 65Hz)로 상향
         bassSynth?.triggerAttackRelease('C2', '8n', time);
-      } else if (beat === 't') {
+      } else if (beat === 't' && _spoonEnabled) {
         // MetalSynth: triggerAttackRelease(note, duration, time) 시그니처.
-        // 기존 ('16n', time)은 '16n'을 음정·time을 duration·스케줄시각 누락으로
-        // 무음 + "scheduled callbacks should use passed-in time" 경고 유발.
         hihatSynth?.triggerAttackRelease(400, '16n', time);
       }
       // '-' 는 무음
@@ -106,7 +117,7 @@ export function pausePercussion(): void {
 }
 
 export function resumePercussion(rhythm: string, bpm: number): void {
-  if (!_enabled) return;
+  if (!anyEnabled()) return;
   // Tone.js Transport 재개 대신 새로 시작 (더 안정적)
   void startPercussion(rhythm, bpm);
 }
