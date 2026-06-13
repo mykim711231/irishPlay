@@ -32,18 +32,28 @@ class MelodyPlayer {
   private synth: any = null;
   private timingCallbacks: any = null;
   private state: PlayState = 'idle';
+  // 커서 시작 지연 타이머 (오디오 출력 레이턴시 보정용)
+  private startTimer: number | null = null;
 
-  /** §15 항목 1: AudioContext는 반드시 사용자 클릭 핸들러 안에서 시작 */
-  private ensureAudioContext(): AudioContext {
+  /** §15 항목 1: AudioContext는 반드시 사용자 클릭 핸들러 안에서 시작
+   *  싱크: resume()을 await하여 오디오 준비 완료 후 커서를 시작 (커서 선행 방지) */
+  private async ensureAudioContext(): Promise<AudioContext> {
     if (!this.audioContext) {
       const AC =
         window.AudioContext ?? (window as any).webkitAudioContext;
       this.audioContext = new AC();
     }
     if (this.audioContext.state === 'suspended') {
-      void this.audioContext.resume();
+      await this.audioContext.resume();
     }
     return this.audioContext;
+  }
+
+  private clearStartTimer(): void {
+    if (this.startTimer !== null) {
+      clearTimeout(this.startTimer);
+      this.startTimer = null;
+    }
   }
 
   /**
@@ -63,7 +73,7 @@ class MelodyPlayer {
     // abcjs가 DOM을 건드리지 않는 '*' 렌더로 재생용 visualObj 생성
     const playVisualObj = abcjs.renderAbc('*', playAbc, {})[0];
 
-    const ctx = this.ensureAudioContext();
+    const ctx = await this.ensureAudioContext();
     const msPerMeasure = calcMsPerMeasure(meter, bpm);
 
     // 기존 재생 정리
@@ -101,13 +111,28 @@ class MelodyPlayer {
 
   play(): void {
     if (!this.synth || !this.timingCallbacks) return;
+    this.clearStartTimer();
     this.synth.start();
-    this.timingCallbacks.start();
+    // 싱크: 스피커 출력까지의 지연(baseLatency+outputLatency)만큼 커서를 늦춰
+    // 소리와 커서를 정렬한다. (커서가 소리보다 앞서가는 현상 보정)
+    const ctx = this.audioContext;
+    const latencyMs = ctx
+      ? ((ctx.baseLatency || 0) + ((ctx as any).outputLatency || 0)) * 1000
+      : 0;
+    if (latencyMs > 4) {
+      this.startTimer = window.setTimeout(() => {
+        this.startTimer = null;
+        this.timingCallbacks?.start();
+      }, latencyMs);
+    } else {
+      this.timingCallbacks.start();
+    }
     this.state = 'playing';
   }
 
   pause(): void {
     if (this.state !== 'playing') return;
+    this.clearStartTimer();
     this.synth?.pause();
     this.timingCallbacks?.pause();
     this.state = 'paused';
@@ -130,6 +155,7 @@ class MelodyPlayer {
   }
 
   private cleanup(): void {
+    this.clearStartTimer();
     try { this.synth?.stop(); } catch (_) { /* 무시 */ }
     try { this.timingCallbacks?.stop(); } catch (_) { /* 무시 */ }
     this.synth = null;

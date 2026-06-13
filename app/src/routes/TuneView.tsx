@@ -81,8 +81,8 @@ export default function TuneView(): JSX.Element {
     });
   }, []);
 
-  const hideMenuTimer = useRef<NodeJS.Timeout>();
-
+  // 악보 클릭 → 컨트롤 토글 (숨기면 악보+연주 진행 표시만 남아 연주에 몰입)
+  // 커서 하이라이트(.cur)는 menuVisible과 무관하게 악보에 계속 표시됨
   const handleScoreClick = useCallback(() => {
     setMenuVisible(v => {
       const newVal = !v;
@@ -93,24 +93,6 @@ export default function TuneView(): JSX.Element {
       }
       return newVal;
     });
-    // 자동 표시 해제 (5초 후) — menuVisible이 false일 때만
-    if (!menuVisible) {
-      if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
-      hideMenuTimer.current = setTimeout(() => {
-        setMenuVisible(true);
-        try {
-          localStorage.setItem('irishPlay_menuVisible', 'true');
-        } catch (e) {
-          console.error('Failed to save menu state:', e);
-        }
-      }, 5000);
-    }
-  }, [menuVisible]);
-
-  useEffect(() => {
-    return () => {
-      if (hideMenuTimer.current) clearTimeout(hideMenuTimer.current);
-    };
   }, []);
 
   // 곡이 바뀌면 연습 모드 초기화

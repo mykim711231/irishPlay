@@ -58,9 +58,15 @@ export const ScoreView: React.FC<ScoreViewProps> = ({
     const el = sectionRef.current;
     if (!el) return;
 
+    // 폭이 실제로 변했을 때만 재렌더 → 컨트롤 토글(높이만 변경) 시
+    // 악보 재렌더로 재생 커서가 끊기는 문제 방지
+    let lastWidth = 0;
     const ro = new ResizeObserver(entries => {
       const width = entries[0]?.contentRect.width ?? 0;
-      if (width > 0) renderScore(width);
+      if (width > 0 && Math.abs(width - lastWidth) > 1) {
+        lastWidth = width;
+        renderScore(width);
+      }
     });
     ro.observe(el); // observe 즉시 한 번 발화 → 초기 렌더
     return () => ro.disconnect();
