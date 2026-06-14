@@ -2,11 +2,10 @@
 
 import React, { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, ChevronRight, Star, BookOpen, QrCode, X, Info } from 'lucide-react';
+import { Music, ChevronRight, Star, BookOpen, QrCode, X } from 'lucide-react';
 import tunesData from '../data/tunes.json';
 import setsData from '../data/sets.json';
 import { SearchBar } from './SearchBar';
-import { LicenseModal } from './LicenseModal';
 import { useFavorites } from '../hooks/useFavorites';
 
 interface TuneItem {
@@ -43,7 +42,6 @@ export const TuneList: React.FC = () => {
   const [selectedBook, setSelectedBook]   = useState(0);
   const [favOnly, setFavOnly]             = useState(false);
   const [showQr, setShowQr]               = useState(false);
-  const [showLicense, setShowLicense]     = useState(false);
 
   const { isFavorite, toggleFavorite, count: favCount } = useFavorites();
 
@@ -126,16 +124,6 @@ export const TuneList: React.FC = () => {
           style={{ background: 'var(--bg)', border: '1.5px solid var(--line)', color: 'var(--teal)' }}
         >
           <QrCode size={16} />
-        </button>
-
-        {/* 정보·라이선스 */}
-        <button
-          onClick={() => setShowLicense(true)}
-          aria-label="정보 및 라이선스"
-          className="flex items-center justify-center w-9 h-9 rounded-full flex-shrink-0 transition-all"
-          style={{ background: 'var(--bg)', border: '1.5px solid var(--line)', color: 'var(--teal)' }}
-        >
-          <Info size={16} />
         </button>
 
         {/* 장식음·연습 가이드 */}
@@ -306,14 +294,9 @@ export const TuneList: React.FC = () => {
         )}
       </main>
 
-      {/* 저작권 푸터 §11 — 자세한 고지는 ⓘ 라이선스 모달 참고 */}
+      {/* 저작권 푸터 §11 */}
       <footer className="copyright-footer">
-        <button
-          onClick={() => setShowLicense(true)}
-          style={{ color: 'inherit', textDecoration: 'underline' }}
-        >
-          튠 데이터: thesession.org (ODbL) · Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann · 라이선스
-        </button>
+        튠 데이터: thesession.org (ODbL) · Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann
       </footer>
 
       {/* QR 공유 모달 */}
@@ -357,8 +340,6 @@ export const TuneList: React.FC = () => {
         </div>
       )}
 
-      {/* 정보·라이선스 모달 */}
-      {showLicense && <LicenseModal onClose={() => setShowLicense(false)} />}
     </div>
   );
 };

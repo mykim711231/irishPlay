@@ -399,6 +399,25 @@ export const GuideView: React.FC = () => {
           </div>
         )}
 
+        {/* 라이선스 고지 — 항상 표시 */}
+        <div className="rounded-xl p-3 flex flex-col gap-1.5 mt-2" style={{ background: 'rgba(31,111,107,.06)', border: '1px solid var(--line)' }}>
+          <p className="text-xs font-semibold" style={{ color: 'var(--teal)' }}>라이선스 &amp; 출처</p>
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
+            튠 악보(ABC) 데이터:{' '}
+            <a href="https://thesession.org" target="_blank" rel="noopener noreferrer"
+               style={{ color: 'var(--teal)', textDecoration: 'underline' }}>
+              thesession.org
+            </a>{' '}
+            — Open Database License (ODbL). 출처 표기·동일 라이선스 공유 조건, AI 학습·처리 금지.
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
+            「Foinn Seisiún」 곡집 &copy; Comhaltas Ceoltóirí Éireann (CCÉ). 전통 곡 자체는 퍼블릭 도메인.
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--dim)' }}>
+            앱: MIT License. 오픈소스 — abcjs (MIT), Tone.js (MIT), React (MIT), lucide-react (ISC), zustand (MIT).
+          </p>
+        </div>
+
         <p className="text-xs text-center py-4" style={{ color: 'var(--dim)' }}>
           ☘️ 천천히, 꾸준히. Tóg go bog é.
         </p>
