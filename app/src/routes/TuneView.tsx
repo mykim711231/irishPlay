@@ -203,8 +203,7 @@ export default function TuneView(): JSX.Element {
 
           {/* §11 저작권 푸터 (PC 전용) */}
           <footer className="copyright-footer">
-            Tunes sourced from thesession.org (CC BY). Foinn Seisiún &copy; Comhaltas
-            Ceoltóirí Éireann.
+            튠 데이터: thesession.org (ODbL) · Foinn Seisiún &copy; Comhaltas Ceoltóirí Éireann
           </footer>
         </div>
       )}

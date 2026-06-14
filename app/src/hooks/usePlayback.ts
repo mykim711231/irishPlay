@@ -124,6 +124,8 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   const tuneRef = useRef(tune);
   const visualObjRef = useRef(visualObj);
   const playStateRef = useRef<PlayState>('idle');
+  // load()에 넘긴 visualObj — 재생 중 악보 재렌더 감지용
+  const loadedVisualObjRef = useRef<any>(null);
 
   useEffect(() => { loopRef.current = isLooping; },         [isLooping]);
   useEffect(() => { bpmRef.current = bpm; },                [bpm]);
@@ -133,6 +135,20 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
   useEffect(() => { tuneRef.current = tune; },              [tune]);
   useEffect(() => { visualObjRef.current = visualObj; },    [visualObj]);
   useEffect(() => { playStateRef.current = playState; },    [playState]);
+
+  // 재생 중 악보가 재렌더되어 visualObj(=DOM)가 교체되면 커서를 새 악보에 재바인딩.
+  // (가로 모드에서 메뉴 숨김 시 악보 폭이 바뀌며 ScoreView가 재렌더되는 케이스)
+  useEffect(() => {
+    if (
+      playStateRef.current === 'playing' &&
+      visualObj &&
+      loadedVisualObjRef.current &&
+      visualObj !== loadedVisualObjRef.current
+    ) {
+      melodyPlayer.rebindCursor(visualObj);
+      loadedVisualObjRef.current = visualObj;
+    }
+  }, [visualObj]);
 
   // 곡이 바뀌면 정지 + BPM 초기화
   useEffect(() => {
@@ -182,6 +198,8 @@ export function usePlayback(tune: Tune | null, visualObj: any): PlaybackHandle {
         onEvent: cursorControl.onEvent,
         onFinished: cursorControl.onFinished,
       });
+      // 재바인딩 기준점 갱신 — 이 vobj 이후 새 visualObj가 오면 재렌더로 간주
+      loadedVisualObjRef.current = vobj;
 
       melodyPlayer.play();
       setPlayState('playing');

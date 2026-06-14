@@ -162,6 +162,28 @@ class MelodyPlayer {
     this.state = 'playing';
   }
 
+  /**
+   * 재생 중 악보가 재렌더(예: 가로 모드에서 메뉴 숨김 → 악보 폭 변경)되어 DOM이
+   * 교체되면, 커서(TimingCallbacks)가 옛 SVG 요소를 가리켜 진행 표시가 사라진다.
+   * 새 화면 visualObj로 타겟을 재바인딩하고 보존한 위치로 seek해 커서를 잇는다.
+   * 오디오(synth)는 DOM과 무관하므로 끊김 없이 계속 재생된다.
+   */
+  rebindCursor(screenVisualObj: any): void {
+    if (this.state !== 'playing') return;
+    if (!this.timingCallbacks || !screenVisualObj) return;
+    try {
+      const ms =
+        typeof this.timingCallbacks.currentMillisecond === 'function'
+          ? this.timingCallbacks.currentMillisecond()
+          : 0;
+      this.timingCallbacks.replaceTarget(screenVisualObj);
+      // 보존한 위치(초)에서 커서를 다시 시작 → 오디오와 정렬 유지
+      this.timingCallbacks.start(ms / 1000, 'seconds');
+    } catch (_) {
+      /* 무시 — 다음 이벤트에서 자가 복구 */
+    }
+  }
+
   pause(): void {
     if (this.state !== 'playing') return;
     this.clearStartTimer();

@@ -22,14 +22,19 @@ let sequence: Sequence<string> | null = null;
 let _bodhranEnabled = false;
 let _spoonEnabled = false;
 
+// 바우런 타격음 — C2(65Hz)는 노트북·휴대폰 스피커가 재생하지 못해 무음으로 들림.
+// A2(110Hz)로 올리고 타격 스윕이 중역대를 지나가게 하여 작은 스피커에서도 "둠" 펀치가 들리도록 함.
+const BODHRAN_NOTE = 'A2';
+
 function ensureSynths(): void {
   if (!bassSynth) {
     bassSynth = new MembraneSynth({
-      pitchDecay: 0.05,
-      octaves: 6,
-      envelope: { attack: 0.001, decay: 0.35, sustain: 0, release: 0.1 },
+      // 스윕 폭을 줄여(octaves) 펀치가 65Hz로 가라앉지 않고 중역대에 머물게 함
+      pitchDecay: 0.03,
+      octaves: 4,
+      envelope: { attack: 0.001, decay: 0.22, sustain: 0, release: 0.1 },
     }).toDestination();
-    bassSynth.volume.value = -6;
+    bassSynth.volume.value = -2;
   }
 
   if (!hihatSynth) {
@@ -86,8 +91,7 @@ export async function startPercussion(rhythm: string, bpm: number): Promise<void
   sequence = new Sequence<string>(
     (time: number, beat: string) => {
       if (beat === 'D' && _bodhranEnabled) {
-        // C1(약 32Hz)은 일반 스피커로 재생 불가 → C2(약 65Hz)로 상향
-        bassSynth?.triggerAttackRelease('C2', '8n', time);
+        bassSynth?.triggerAttackRelease(BODHRAN_NOTE, '8n', time);
       } else if (beat === 't' && _spoonEnabled) {
         // MetalSynth: triggerAttackRelease(note, duration, time) 시그니처.
         hihatSynth?.triggerAttackRelease(400, '16n', time);
@@ -135,7 +139,7 @@ export async function previewRhythm(
 
   sequence = new Sequence<string>(
     (time: number, beat: string) => {
-      if (beat === 'D') bassSynth?.triggerAttackRelease('C2', '8n', time);
+      if (beat === 'D') bassSynth?.triggerAttackRelease(BODHRAN_NOTE, '8n', time);
       else if (beat === 't') hihatSynth?.triggerAttackRelease(400, '16n', time);
     },
     pattern,
